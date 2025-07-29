@@ -1,0 +1,67 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.29.2'
+        channel: 'stable'
+    
+    - name: Get dependencies
+      run: flutter pub get
+    
+    - name: Build APK
+      run: flutter build apk --debug
+    
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: expense-tracker-apk
+        path: build/app/outputs/flutter-apk/app-debug.apk
+        
+    - name: Create Release
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v1.0.${{ github.run_number }}
+        name: 个人记账助手 v1.0.${{ github.run_number }}
+        body: |
+          ## 📱 个人记账助手 APK
+          
+          ### 功能特色
+          - 🏠 Dashboard首页 - 账户余额、快捷操作
+          - 📊 Statistics统计 - 图表分析、趋势统计  
+          - 🤖 AI智能助手 - 自然语言记账
+          - 📅 Calendar日历 - 月历视图、消费详情
+          - ⚙️ Settings设置 - 个性化配置
+          
+          ### 安装说明
+          1. 下载下方的APK文件
+          2. 在手机上允许"未知来源"应用安装
+          3. 点击APK文件进行安装
+          4. 享受现代化的记账体验！
+          
+        files: build/app/outputs/flutter-apk/app-debug.apk
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

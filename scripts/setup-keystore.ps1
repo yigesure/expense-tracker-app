@@ -1,41 +1,41 @@
-# PowerShell脚本：生成Android签名密钥库
-# 适用于Windows系统
+# PowerShell Script: Generate Android Signing Keystore
+# For Windows System
 
-Write-Host "🔐 开始生成Android签名密钥库..." -ForegroundColor Green
+Write-Host "🔐 Starting Android keystore generation..." -ForegroundColor Green
 
-# 检查Java环境
+# Check Java environment
 try {
     $javaVersion = java -version 2>&1 | Select-String "version"
-    Write-Host "✅ Java环境检查通过: $javaVersion" -ForegroundColor Green
+    Write-Host "✅ Java environment check passed: $javaVersion" -ForegroundColor Green
 } catch {
-    Write-Host "❌ 错误: 未找到Java环境，请先安装JDK" -ForegroundColor Red
-    Write-Host "下载地址: https://www.oracle.com/java/technologies/downloads/" -ForegroundColor Yellow
+    Write-Host "❌ Error: Java environment not found, please install JDK first" -ForegroundColor Red
+    Write-Host "Download URL: https://www.oracle.com/java/technologies/downloads/" -ForegroundColor Yellow
     exit 1
 }
 
-# 设置密钥库参数
+# Set keystore parameters
 $keystorePath = "android/app/upload-keystore.jks"
 $keyAlias = "upload"
 
-Write-Host "`n📝 请输入密钥库信息:" -ForegroundColor Cyan
+Write-Host "`n📝 Please enter keystore information:" -ForegroundColor Cyan
 
-# 获取用户输入
-$keystorePassword = Read-Host "密钥库密码 (建议使用强密码)"
-$keyPassword = Read-Host "密钥密码 (可以与密钥库密码相同)"
-$organizationName = Read-Host "组织名称 (例如: 个人开发者)"
-$organizationUnit = Read-Host "组织单位 (例如: 开发部门)"
-$city = Read-Host "城市 (例如: 北京)"
-$state = Read-Host "省份 (例如: 北京市)"
-$country = Read-Host "国家代码 (例如: CN)"
+# Get user input
+$keystorePassword = Read-Host "Keystore password (recommend using strong password)"
+$keyPassword = Read-Host "Key password (can be same as keystore password)"
+$organizationName = Read-Host "Organization name (e.g.: Personal Developer)"
+$organizationUnit = Read-Host "Organization unit (e.g.: Development Department)"
+$city = Read-Host "City (e.g.: Beijing)"
+$state = Read-Host "State (e.g.: Beijing)"
+$country = Read-Host "Country code (e.g.: CN)"
 
-# 创建android/app目录（如果不存在）
+# Create android/app directory if not exists
 if (!(Test-Path "android/app")) {
     New-Item -ItemType Directory -Path "android/app" -Force
-    Write-Host "✅ 创建android/app目录" -ForegroundColor Green
+    Write-Host "✅ Created android/app directory" -ForegroundColor Green
 }
 
-# 生成密钥库
-Write-Host "`n🔨 正在生成密钥库..." -ForegroundColor Yellow
+# Generate keystore
+Write-Host "`n🔨 Generating keystore..." -ForegroundColor Yellow
 
 $keytoolCommand = @"
 keytool -genkey -v -keystore $keystorePath -alias $keyAlias -keyalg RSA -keysize 2048 -validity 10000 -storepass $keystorePassword -keypass $keyPassword -dname "CN=$organizationName, OU=$organizationUnit, L=$city, ST=$state, C=$country"
@@ -43,38 +43,38 @@ keytool -genkey -v -keystore $keystorePath -alias $keyAlias -keyalg RSA -keysize
 
 try {
     Invoke-Expression $keytoolCommand
-    Write-Host "✅ 密钥库生成成功!" -ForegroundColor Green
+    Write-Host "✅ Keystore generated successfully!" -ForegroundColor Green
 } catch {
-    Write-Host "❌ 密钥库生成失败: $_" -ForegroundColor Red
+    Write-Host "❌ Keystore generation failed: $_" -ForegroundColor Red
     exit 1
 }
 
-# 验证密钥库
+# Verify keystore
 if (Test-Path $keystorePath) {
-    Write-Host "✅ 密钥库文件已创建: $keystorePath" -ForegroundColor Green
+    Write-Host "✅ Keystore file created: $keystorePath" -ForegroundColor Green
     
-    # 显示密钥库信息
-    Write-Host "`n📋 密钥库信息:" -ForegroundColor Cyan
+    # Display keystore information
+    Write-Host "`n📋 Keystore information:" -ForegroundColor Cyan
     keytool -list -v -keystore $keystorePath -storepass $keystorePassword
 } else {
-    Write-Host "❌ 密钥库文件未找到" -ForegroundColor Red
+    Write-Host "❌ Keystore file not found" -ForegroundColor Red
     exit 1
 }
 
-# 生成Base64编码
-Write-Host "`n🔄 正在生成Base64编码..." -ForegroundColor Yellow
+# Generate Base64 encoding
+Write-Host "`n🔄 Generating Base64 encoding..." -ForegroundColor Yellow
 
 try {
     $keystoreBytes = [System.IO.File]::ReadAllBytes($keystorePath)
     $keystoreBase64 = [System.Convert]::ToBase64String($keystoreBytes)
     
-    Write-Host "✅ Base64编码生成成功!" -ForegroundColor Green
+    Write-Host "✅ Base64 encoding generated successfully!" -ForegroundColor Green
 } catch {
-    Write-Host "❌ Base64编码生成失败: $_" -ForegroundColor Red
+    Write-Host "❌ Base64 encoding generation failed: $_" -ForegroundColor Red
     exit 1
 }
 
-# 创建key.properties文件
+# Create key.properties file
 $keyPropertiesContent = @"
 storePassword=$keystorePassword
 keyPassword=$keyPassword
@@ -85,14 +85,14 @@ storeFile=upload-keystore.jks
 $keyPropertiesPath = "android/key.properties"
 $keyPropertiesContent | Out-File -FilePath $keyPropertiesPath -Encoding UTF8
 
-Write-Host "✅ 创建key.properties文件: $keyPropertiesPath" -ForegroundColor Green
+Write-Host "✅ Created key.properties file: $keyPropertiesPath" -ForegroundColor Green
 
-# 显示GitHub Secrets配置信息
+# Display GitHub Secrets configuration information
 Write-Host "`n" + "="*60 -ForegroundColor Cyan
-Write-Host "🔐 GitHub Secrets 配置信息" -ForegroundColor Cyan
+Write-Host "🔐 GitHub Secrets Configuration Information" -ForegroundColor Cyan
 Write-Host "="*60 -ForegroundColor Cyan
 
-Write-Host "`n请在GitHub仓库设置中添加以下Secrets:" -ForegroundColor Yellow
+Write-Host "`nPlease add the following Secrets in GitHub repository settings:" -ForegroundColor Yellow
 Write-Host "`n1. KEYSTORE_BASE64:" -ForegroundColor White
 Write-Host $keystoreBase64 -ForegroundColor Gray
 
@@ -107,10 +107,10 @@ Write-Host $keyAlias -ForegroundColor Gray
 
 Write-Host "`n" + "="*60 -ForegroundColor Cyan
 
-# 保存配置信息到文件
+# Save configuration information to file
 $secretsInfo = @"
-# GitHub Secrets 配置信息
-# 请将以下信息添加到GitHub仓库的Secrets中
+# GitHub Secrets Configuration Information
+# Please add the following information to GitHub repository Secrets
 
 KEYSTORE_BASE64=$keystoreBase64
 
@@ -120,18 +120,18 @@ KEY_PASSWORD=$keyPassword
 
 KEY_ALIAS=$keyAlias
 
-# 配置步骤:
-# 1. 进入GitHub仓库页面
-# 2. 点击Settings -> Secrets and variables -> Actions
-# 3. 点击New repository secret
-# 4. 逐个添加上述4个secrets
+# Configuration steps:
+# 1. Go to GitHub repository page
+# 2. Click Settings -> Secrets and variables -> Actions
+# 3. Click New repository secret
+# 4. Add the above 4 secrets one by one
 
-# 注意: 请妥善保管这些信息，不要泄露给他人
+# Note: Please keep this information safe and do not leak it to others
 "@
 
 $secretsInfo | Out-File -FilePath "github-secrets.txt" -Encoding UTF8
-Write-Host "💾 配置信息已保存到: github-secrets.txt" -ForegroundColor Green
+Write-Host "💾 Configuration information saved to: github-secrets.txt" -ForegroundColor Green
 
-Write-Host "`n🎉 密钥库设置完成!" -ForegroundColor Green
-Write-Host "📝 下一步: 将Secrets信息添加到GitHub仓库设置中" -ForegroundColor Yellow
-Write-Host "📖 详细步骤请参考: GitHub仓库设置指南.md" -ForegroundColor Yellow
+Write-Host "`n🎉 Keystore setup completed!" -ForegroundColor Green
+Write-Host "📝 Next step: Add Secrets information to GitHub repository settings" -ForegroundColor Yellow
+Write-Host "📖 For detailed steps, please refer to: GitHub Repository Setup Guide.md" -ForegroundColor Yellow

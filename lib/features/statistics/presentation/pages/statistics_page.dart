@@ -400,9 +400,9 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
   Widget _buildMonthlyStats() {
     final stats = [
       {'title': '平均日支出', 'value': '¥114.02', 'icon': FluentSystemIcons.ic_fluent_calculator_regular},
-      {'title': '最大单笔', 'value': '¥580.00', 'icon': FluentSystemIcons.ic_fluent_arrow_up_20_regular},
+      {'title': '最大单笔', 'value': '¥580.00', 'icon': FluentSystemIcons.ic_fluent_arrow_up_regular},
       {'title': '消费天数', 'value': '28天', 'icon': FluentSystemIcons.ic_fluent_calendar_regular},
-      {'title': '节余率', 'value': '59.8%', 'icon': FluentSystemIcons.ic_fluent_savings_20_regular},
+      {'title': '节余率', 'value': '59.8%', 'icon': FluentSystemIcons.ic_fluent_savings_regular},
     ];
 
     return GridView.builder(

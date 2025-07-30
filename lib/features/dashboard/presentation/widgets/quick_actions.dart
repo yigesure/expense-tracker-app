@@ -58,7 +58,7 @@ class QuickActions extends StatelessWidget {
               _buildActionCard(
                 context,
                 '分析',
-                FluentSystemIcons.ic_fluent_chart_multiple_20_filled,
+                FluentSystemIcons.ic_fluent_chart_multiple_filled,
                 AppColors.expenseGradient,
                 () {
                   // TODO: 打开分析页面

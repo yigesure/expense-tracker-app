@@ -101,8 +101,8 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                           onPressed: () {
                             // 显示余额详情
                           },
-                          icon: const Icon(
-                            FluentSystemIcons.ic_fluent_eye_20_regular,
+                          icon: Icon(
+                            FluentSystemIcons.ic_fluent_eye_regular,
                             color: Colors.white,
                             size: 20,
                           ),
@@ -153,7 +153,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                         child: _buildIncomeExpenseItem(
                           '本月支出',
                           monthlyExpense,
-                          FluentSystemIcons.ic_fluent_arrow_down_20_filled,
+                          FluentSystemIcons.ic_fluent_arrow_down_filled,
                           AppColors.error,
                         ),
                       ),
@@ -172,8 +172,8 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
-                          FluentSystemIcons.ic_fluent_wallet_20_filled,
+                        Icon(
+                          FluentSystemIcons.ic_fluent_wallet_filled,
                           color: Colors.white,
                           size: 16,
                         ),

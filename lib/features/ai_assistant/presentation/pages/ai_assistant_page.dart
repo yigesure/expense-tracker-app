@@ -179,7 +179,7 @@ class AiAssistantPage extends ConsumerWidget {
   Widget _buildFeatureCards(BuildContext context) {
     final features = [
       {
-        'icon': FluentSystemIcons.ic_fluent_mic_regular,
+        'icon': FluentSystemIcons.ic_fluent_mic_filled,
         'title': '语音记账',
         'description': '说出消费内容\n自动识别分类',
         'color': AppColors.softBlue,

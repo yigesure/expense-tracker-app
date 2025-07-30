@@ -215,7 +215,7 @@ class RecentTransactions extends ConsumerWidget {
                 // 更多操作按钮
                 PopupMenuButton<String>(
                   icon: Icon(
-                    FluentSystemIcons.ic_fluent_more_horizontal_20_regular,
+                    FluentSystemIcons.ic_fluent_more_horizontal_regular,
                     color: AppColors.textHint,
                     size: 20,
                   ),
@@ -284,7 +284,7 @@ class RecentTransactions extends ConsumerWidget {
               borderRadius: BorderRadius.circular(40),
             ),
             child: Icon(
-              FluentSystemIcons.ic_fluent_receipt_20_regular,
+              FluentSystemIcons.ic_fluent_receipt_regular,
               color: AppColors.gradientPurpleStart,
               size: 40,
             ),

@@ -212,7 +212,7 @@ class _QuickInputBarState extends State<QuickInputBar>
                     onPressed: () {
                       // TODO: 实现语音输入
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       FluentSystemIcons.ic_fluent_mic_regular,
                       color: AppColors.softBlue,
                     ),

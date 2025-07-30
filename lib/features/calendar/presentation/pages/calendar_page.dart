@@ -92,7 +92,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
                     });
                   },
                   icon: const Icon(
-                    FluentSystemIcons.ic_fluent_calendar_ltr_20_regular,
+                    FluentSystemIcons.ic_fluent_calendar_regular,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -434,7 +434,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              FluentSystemIcons.ic_fluent_receipt_20_regular,
+              FluentSystemIcons.ic_fluent_receipt_regular,
               size: 48,
               color: AppColors.textHint,
             ),

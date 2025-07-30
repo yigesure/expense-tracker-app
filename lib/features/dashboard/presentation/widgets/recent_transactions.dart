@@ -122,9 +122,9 @@ class RecentTransactions extends ConsumerWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: isExpense 
-                        ? AppColors.error.withValues(alpha: 0.1)
-                        : AppColors.success.withValues(alpha: 0.1),
+                    color: isExpense
+                        ? AppColors.error.withAlpha((0.1 * 255).round())
+                        : AppColors.success.withAlpha((0.1 * 255).round()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Center(
@@ -194,9 +194,9 @@ class RecentTransactions extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: isExpense 
-                            ? AppColors.error.withValues(alpha: 0.1)
-                            : AppColors.success.withValues(alpha: 0.1),
+                        color: isExpense
+                            ? AppColors.error.withAlpha((0.1 * 255).round())
+                            : AppColors.success.withAlpha((0.1 * 255).round()),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
@@ -214,8 +214,8 @@ class RecentTransactions extends ConsumerWidget {
                 
                 // 更多操作按钮
                 PopupMenuButton<String>(
-                  icon: Icon(
-                    FluentSystemIcons.ic_fluent_more_horizontal_regular,
+                  icon: const Icon(
+                    Icons.more_horiz,
                     color: AppColors.textHint,
                     size: 20,
                   ),
@@ -280,11 +280,11 @@ class RecentTransactions extends ConsumerWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.gradientPurpleStart.withValues(alpha: 0.1),
+              color: AppColors.gradientPurpleStart.withAlpha((0.1 * 255).round()),
               borderRadius: BorderRadius.circular(40),
             ),
-            child: Icon(
-              FluentSystemIcons.ic_fluent_receipt_regular,
+            child: const Icon(
+              Icons.receipt,
               color: AppColors.gradientPurpleStart,
               size: 40,
             ),

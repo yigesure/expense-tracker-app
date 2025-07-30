@@ -103,7 +103,7 @@ class SettingsPage extends StatelessWidget {
                 context,
                 '帮助中心',
                 '查看常见问题和帮助',
-                FluentSystemIcons.ic_fluent_question_regular,
+                Icons.help_outline,
                 () {},
               ),
               _buildSettingsItem(
@@ -167,7 +167,7 @@ class SettingsPage extends StatelessWidget {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppColors.gradientPurpleStart.withValues(alpha: 0.1),
+          color: AppColors.gradientPurpleStart.withAlpha((0.1 * 255).round()),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(

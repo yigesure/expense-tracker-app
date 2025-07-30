@@ -34,7 +34,7 @@ class AiAssistantPage extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(60),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.gradientPurpleStart.withValues(alpha: 0.3),
+                            color: AppColors.gradientPurpleStart.withAlpha((0.3 * 255).round()),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                           ),
@@ -89,7 +89,7 @@ class AiAssistantPage extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.gradientPurpleStart.withValues(alpha: 0.3),
+                              color: AppColors.gradientPurpleStart.withAlpha((0.3 * 255).round()),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -179,7 +179,7 @@ class AiAssistantPage extends ConsumerWidget {
   Widget _buildFeatureCards(BuildContext context) {
     final features = [
       {
-        'icon': FluentSystemIcons.ic_fluent_mic_filled,
+        'icon': Icons.mic,
         'title': '语音记账',
         'description': '说出消费内容\n自动识别分类',
         'color': AppColors.softBlue,
@@ -223,7 +223,7 @@ class AiAssistantPage extends ConsumerWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: (feature['color'] as Color).withValues(alpha: 0.1),
+                      color: (feature['color'] as Color).withAlpha((0.1 * 255).round()),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(

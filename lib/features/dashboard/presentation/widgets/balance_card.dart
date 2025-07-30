@@ -72,7 +72,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.gradientPurpleStart.withValues(alpha: 0.3),
+                    color: AppColors.gradientPurpleStart.withAlpha((0.3 * 255).round()),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
@@ -88,21 +88,21 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                       Text(
                         '账户余额',
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.9),
+                          color: Colors.white.withAlpha((0.9 * 255).round()),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
+                          color: Colors.white.withAlpha((0.2 * 255).round()),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: IconButton(
                           onPressed: () {
                             // 显示余额详情
                           },
-                          icon: Icon(
-                            FluentSystemIcons.ic_fluent_eye_regular,
+                          icon: const Icon(
+                            Icons.visibility,
                             color: Colors.white,
                             size: 20,
                           ),
@@ -146,7 +146,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                       Container(
                         width: 1,
                         height: 40,
-                        color: Colors.white.withValues(alpha: 0.3),
+                        color: Colors.white.withAlpha((0.3 * 255).round()),
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                       ),
                       Expanded(
@@ -166,14 +166,14 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: Colors.white.withAlpha((0.15 * 255).round()),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          FluentSystemIcons.ic_fluent_wallet_filled,
+                        const Icon(
+                          Icons.account_balance_wallet,
                           color: Colors.white,
                           size: 16,
                         ),
@@ -211,7 +211,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.2),
+                color: iconColor.withAlpha((0.2 * 255).round()),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Icon(
@@ -224,7 +224,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
             Text(
               title,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white.withValues(alpha: 0.8),
+                color: Colors.white.withAlpha((0.8 * 255).round()),
                 fontWeight: FontWeight.w500,
               ),
             ),

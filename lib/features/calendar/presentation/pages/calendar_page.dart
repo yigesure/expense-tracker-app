@@ -136,7 +136,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.gradientPurpleStart.withValues(alpha: 0.3),
+            color: AppColors.gradientPurpleStart.withAlpha((0.3 * 255).round()),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -199,7 +199,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
               Container(
                 width: 1,
                 height: 40,
-                color: Colors.white.withValues(alpha: 0.3),
+                color: Colors.white.withAlpha((0.3 * 255).round()),
               ),
               Expanded(
                 child: _buildSummaryItem('消费天数', '28天', Icons.calendar_today),
@@ -207,7 +207,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
               Container(
                 width: 1,
                 height: 40,
-                color: Colors.white.withValues(alpha: 0.3),
+                color: Colors.white.withAlpha((0.3 * 255).round()),
               ),
               Expanded(
                 child: _buildSummaryItem('日均支出', '¥122.16', Icons.analytics),
@@ -224,7 +224,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
       children: [
         Icon(
           icon,
-          color: Colors.white.withValues(alpha: 0.8),
+          color: Colors.white.withAlpha((0.8 * 255).round()),
           size: 20,
         ),
         const SizedBox(height: 8),
@@ -239,7 +239,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
         Text(
           title,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.white.withValues(alpha: 0.8),
+            color: Colors.white.withAlpha((0.8 * 255).round()),
           ),
         ),
       ],
@@ -326,7 +326,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
                   margin: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     gradient: isSelected ? AppColors.primaryGradient : null,
-                    color: isSelected ? null : (isToday ? AppColors.softBlue.withValues(alpha: 0.1) : null),
+                    color: isSelected ? null : (isToday ? AppColors.softBlue.withAlpha((0.1 * 255).round()) : null),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Stack(
@@ -433,8 +433,8 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              FluentSystemIcons.ic_fluent_receipt_regular,
+            const Icon(
+              Icons.receipt,
               size: 48,
               color: AppColors.textHint,
             ),

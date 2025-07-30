@@ -127,8 +127,8 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: isSelected 
-                        ? AppColors.gradientPurpleStart.withValues(alpha: 0.3)
+                    color: isSelected
+                        ? AppColors.gradientPurpleStart.withAlpha((0.3 * 255).round())
                         : AppColors.shadowLight,
                     blurRadius: 8,
                     offset: const Offset(0, 2),
@@ -137,7 +137,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
               ),
               child: Center(
                 child: Text(
-                      '${month}月',
+                      '$month月',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -557,7 +557,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: (category['color'] as Color).withValues(alpha: 0.1),
+                  color: (category['color'] as Color).withAlpha((0.1 * 255).round()),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
@@ -646,8 +646,8 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          AppColors.gradientPurpleStart.withValues(alpha: 0.3),
-                          AppColors.gradientPurpleStart.withValues(alpha: 0.0),
+                          AppColors.gradientPurpleStart.withAlpha((0.3 * 255).round()),
+                          AppColors.gradientPurpleStart.withAlpha((0.0 * 255).round()),
                         ],
                       ),
                     ),
@@ -729,7 +729,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: color.withAlpha((0.1 * 255).round()),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(

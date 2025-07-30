@@ -88,7 +88,7 @@ class _QuickInputBarState extends State<QuickInputBar>
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.gradientPurpleStart.withValues(alpha: 0.4),
+                  color: AppColors.gradientPurpleStart.withAlpha((0.4 * 255).round()),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -205,15 +205,15 @@ class _QuickInputBarState extends State<QuickInputBar>
                 // 语音输入按钮
                 Container(
                   decoration: BoxDecoration(
-                    color: AppColors.softBlue.withValues(alpha: 0.1),
+                    color: AppColors.softBlue.withAlpha((0.1 * 255).round()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
                     onPressed: () {
                       // TODO: 实现语音输入
                     },
-                    icon: Icon(
-                      FluentSystemIcons.ic_fluent_mic_regular,
+                    icon: const Icon(
+                      Icons.mic,
                       color: AppColors.softBlue,
                     ),
                   ),

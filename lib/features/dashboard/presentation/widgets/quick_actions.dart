@@ -58,7 +58,7 @@ class QuickActions extends StatelessWidget {
               _buildActionCard(
                 context,
                 '分析',
-                FluentSystemIcons.ic_fluent_chart_multiple_filled,
+                Icons.analytics,
                 AppColors.expenseGradient,
                 () {
                   // TODO: 打开分析页面
@@ -89,7 +89,7 @@ class QuickActions extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: gradient.colors.first.withValues(alpha: 0.3),
+              color: gradient.colors.first.withAlpha((0.3 * 255).round()),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),

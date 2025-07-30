@@ -47,7 +47,7 @@ class RecentTransactions extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    Icon(
+                    const Icon(
                       FluentSystemIcons.ic_fluent_chevron_right_regular,
                       color: AppColors.gradientPurpleStart,
                       size: 16,
@@ -107,11 +107,11 @@ class RecentTransactions extends ConsumerWidget {
             decoration: BoxDecoration(
               color: AppColors.surface,
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: AppColors.shadowLight,
                   blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
@@ -230,7 +230,7 @@ class RecentTransactions extends ConsumerWidget {
                     }
                   },
                   itemBuilder: (context) => [
-                    PopupMenuItem(
+                    const PopupMenuItem(
                       value: 'edit',
                       child: Row(
                         children: [
@@ -239,12 +239,12 @@ class RecentTransactions extends ConsumerWidget {
                             size: 16,
                             color: AppColors.textSecondary,
                           ),
-                          const SizedBox(width: 8),
-                          const Text('编辑'),
+                          SizedBox(width: 8),
+                          Text('编辑'),
                         ],
                       ),
                     ),
-                    PopupMenuItem(
+                    const PopupMenuItem(
                       value: 'delete',
                       child: Row(
                         children: [
@@ -253,7 +253,7 @@ class RecentTransactions extends ConsumerWidget {
                             size: 16,
                             color: AppColors.error,
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8),
                           Text(
                             '删除',
                             style: TextStyle(color: AppColors.error),

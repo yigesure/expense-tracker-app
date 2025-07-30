@@ -181,10 +181,10 @@ class _QuickInputBarState extends State<QuickInputBar>
               ),
               child: TextField(
                 maxLines: 3,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: '输入消费记录...\n例如：红牛6.5，午饭20元，公交2元',
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.all(16),
+                  contentPadding: EdgeInsets.all(16),
                   hintStyle: TextStyle(
                     color: AppColors.textHint,
                     fontSize: 14,

@@ -102,7 +102,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                             // 显示余额详情
                           },
                           icon: const Icon(
-                            FluentSystemIcons.ic_fluent_eye_regular,
+                            FluentSystemIcons.ic_fluent_eye_20_regular,
                             color: Colors.white,
                             size: 20,
                           ),

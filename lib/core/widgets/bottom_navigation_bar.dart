@@ -86,7 +86,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: isActive ? AppColors.gradientPurpleStart.withValues(alpha: 0.1) : Colors.transparent,
+          color: isActive ? AppColors.gradientPurpleStart.withOpacity(0.1) : Colors.transparent,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

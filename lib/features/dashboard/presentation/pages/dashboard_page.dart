@@ -22,10 +22,10 @@ class DashboardPage extends ConsumerWidget {
             _buildAppBar(context),
             
             // 主要内容区域
-            Expanded(
+            const Expanded(
               child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: const Column(
+                physics: BouncingScrollPhysics(),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 16),

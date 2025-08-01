@@ -232,8 +232,8 @@ class _QuickInputBarState extends State<QuickInputBar>
                       backgroundColor: AppColors.gradientPurpleStart,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                     ),
                     child: const Text(
@@ -293,14 +293,14 @@ class _QuickInputBarState extends State<QuickInputBar>
             width: 1,
           ),
         ),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(emoji, style: TextStyle(fontSize: 16)),
-            SizedBox(width: 4),
+            Text(emoji, style: const TextStyle(fontSize: 16)),
+            const SizedBox(width: 4),
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.w500,

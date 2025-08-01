@@ -1,0 +1,122 @@
+name: 构建Android APK
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: '构建类型'
+        required: true
+        default: 'release'
+        type: choice
+        options:
+        - release
+        - debug
+
+jobs:
+  build:
+    name: 构建APK
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 设置Java环境
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        
+    - name: 设置Flutter环境
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
+        channel: 'stable'
+        cache: true
+        
+    - name: 获取Flutter依赖
+      run: flutter pub get
+      
+    - name: 运行代码分析
+      run: flutter analyze
+      
+    - name: 运行测试
+      run: flutter test
+      
+    - name: 创建密钥存储文件
+      if: github.event_name != 'pull_request'
+      run: |
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+        
+    - name: 创建密钥属性文件
+      if: github.event_name != 'pull_request'
+      run: |
+        echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+        echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+        echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+        echo "storeFile=keystore.jks" >> android/key.properties
+        
+    - name: 构建APK (Release)
+      if: github.event_name != 'pull_request'
+      run: flutter build apk --release --split-per-abi
+      
+    - name: 构建APK (Debug)
+      if: github.event_name == 'pull_request'
+      run: flutter build apk --debug
+      
+    - name: 重命名APK文件
+      run: |
+        cd build/app/outputs/flutter-apk/
+        if [ -f "app-release.apk" ]; then
+          mv app-release.apk "记账应用-v${{ github.run_number }}-release.apk"
+        fi
+        if [ -f "app-debug.apk" ]; then
+          mv app-debug.apk "记账应用-v${{ github.run_number }}-debug.apk"
+        fi
+        # 重命名分架构APK
+        for file in app-*-release.apk; do
+          if [ -f "$file" ]; then
+            arch=$(echo $file | sed 's/app-\(.*\)-release.apk/\1/')
+            mv "$file" "记账应用-v${{ github.run_number }}-$arch-release.apk"
+          fi
+        done
+        
+    - name: 上传APK构建产物
+      uses: actions/upload-artifact@v4
+      with:
+        name: apk-builds
+        path: build/app/outputs/flutter-apk/*.apk
+        retention-days: 30
+        
+    - name: 创建Release (仅主分支)
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v1.0.${{ github.run_number }}
+        name: 记账应用 v1.0.${{ github.run_number }}
+        body: |
+          ## 📱 记账应用 v1.0.${{ github.run_number }}
+          
+          ### 🚀 新功能
+          - 自动构建和发布
+          - 支持多架构APK
+          
+          ### 📦 下载说明
+          - `记账应用-v${{ github.run_number }}-release.apk`: 通用版本
+          - `记账应用-v${{ github.run_number }}-arm64-v8a-release.apk`: 64位ARM设备
+          - `记账应用-v${{ github.run_number }}-armeabi-v7a-release.apk`: 32位ARM设备
+          - `记账应用-v${{ github.run_number }}-x86_64-release.apk`: 64位x86设备
+          
+          ### 📋 构建信息
+          - 构建时间: ${{ github.event.head_commit.timestamp }}
+          - 提交SHA: ${{ github.sha }}
+          - Flutter版本: 3.19.0
+        files: build/app/outputs/flutter-apk/*.apk
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

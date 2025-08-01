@@ -293,14 +293,14 @@ class _QuickInputBarState extends State<QuickInputBar>
             width: 1,
           ),
         ),
-        child: Row(
+        child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 16)),
-            const SizedBox(width: 4),
+            Text(emoji, style: TextStyle(fontSize: 16)),
+            SizedBox(width: 4),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.w500,

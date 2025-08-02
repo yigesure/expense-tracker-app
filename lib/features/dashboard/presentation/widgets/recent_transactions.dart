@@ -256,7 +256,7 @@ class RecentTransactions extends ConsumerWidget {
                           SizedBox(width: 8),
                           Text(
                             '删除',
-                            style: TextStyle(color: AppColors.error),
+                            style: const TextStyle(color: AppColors.error),
                           ),
                         ],
                       ),

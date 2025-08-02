@@ -96,10 +96,10 @@ class _QuickInputBarState extends State<QuickInputBar>
             ),
             child: Material(
               color: Colors.transparent,
-              child: InkWell(
+                child: InkWell(
                 borderRadius: BorderRadius.circular(28),
                 onTap: _toggleExpanded,
-                child: SizedBox(
+                child: const SizedBox(
                   width: 56,
                   height: 56,
                   child: Transform.rotate(
@@ -141,9 +141,9 @@ class _QuickInputBarState extends State<QuickInputBar>
               child: Container(
                 width: 40,
                 height: 4,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.textHint,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.all(Radius.circular(2)),
                 ),
               ),
             ),
@@ -171,20 +171,20 @@ class _QuickInputBarState extends State<QuickInputBar>
             
             // 输入框
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.background,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
+                borderRadius: BorderRadius.all(Radius.circular(16)),
+                border: Border.fromBorderSide(BorderSide(
                   color: AppColors.divider,
                   width: 1,
-                ),
+                )),
               ),
               child: TextField(
                 maxLines: 3,
                 decoration: const InputDecoration(
                   hintText: '输入消费记录...\n例如：红牛6.5，午饭20元，公交2元',
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(16),
+                  contentPadding: const EdgeInsets.all(16),
                   hintStyle: TextStyle(
                     color: AppColors.textHint,
                     fontSize: 14,
@@ -206,7 +206,7 @@ class _QuickInputBarState extends State<QuickInputBar>
                 Container(
                   decoration: BoxDecoration(
                     color: AppColors.softBlue.withAlpha((0.1 * 255).round()),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: const BorderRadius.all(Radius.circular(12)),
                   ),
                   child: IconButton(
                     onPressed: () {
@@ -285,13 +285,13 @@ class _QuickInputBarState extends State<QuickInputBar>
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: AppColors.background,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          border: Border.fromBorderSide(BorderSide(
             color: AppColors.divider,
             width: 1,
-          ),
+          )),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

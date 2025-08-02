@@ -13,7 +13,7 @@ class SettingsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           '设置',
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
           ),

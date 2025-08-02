@@ -95,7 +95,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white.withAlpha((0.2 * 255).round()),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: const BorderRadius.all(Radius.circular(8)),
                         ),
                         child: IconButton(
                           onPressed: () {

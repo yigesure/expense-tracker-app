@@ -1,20 +1,20 @@
 {
-  "path": "c:\\Users\\23828\\Desktop\\expense-tracker-app-main\\web_demo",
-  "desc": "这是一个现代化的个人记账应用演示版，使用HTML/CSS/JavaScript开发，具有仪表板、收支记录、交易历史等功能，支持快速记账和数据展示。",
-  "id": "a9ee048295ca41a4a4386d9883db1114",
+  "path": "c:\\Users\\23828\\Desktop\\expense-tracker-app-main",
+  "desc": "这是一个现代化的Flutter个人记账应用，具有智能记账、AI助手、数据可视化等功能。支持自然语言输入记账，完整的交易管理和统计分析功能。",
+  "id": "72c3e3314889480e94caa26cf01abdeb",
   "data": {
-    "spaceKey": "a9ee048295ca41a4a4386d9883db1114",
+    "spaceKey": "72c3e3314889480e94caa26cf01abdeb",
     "connections": {
-      "webIDE": "https://a9ee048295ca41a4a4386d9883db1114.ap-singapore.cloudstudio.club",
-      "preview": "https://a9ee048295ca41a4a4386d9883db1114--{port}.ap-singapore.cloudstudio.club",
-      "api": "https://a9ee048295ca41a4a4386d9883db1114--api.ap-singapore.cloudstudio.club",
-      "pty": "https://a9ee048295ca41a4a4386d9883db1114--pty.ap-singapore.cloudstudio.club"
+      "webIDE": "https://72c3e3314889480e94caa26cf01abdeb.ap-singapore.cloudstudio.club",
+      "preview": "",
+      "api": "https://72c3e3314889480e94caa26cf01abdeb--api.ap-singapore.cloudstudio.club",
+      "pty": "https://72c3e3314889480e94caa26cf01abdeb--pty.ap-singapore.cloudstudio.club"
     }
   },
   "config": {
-    "api": "https://a9ee048295ca41a4a4386d9883db1114--api.ap-singapore.cloudstudio.club",
-    "pty": "https://a9ee048295ca41a4a4386d9883db1114--pty.ap-singapore.cloudstudio.club",
+    "api": "https://72c3e3314889480e94caa26cf01abdeb--api.ap-singapore.cloudstudio.club",
+    "pty": "https://72c3e3314889480e94caa26cf01abdeb--pty.ap-singapore.cloudstudio.club",
     "region": "ap-shanghai",
-    "spaceKey": "a9ee048295ca41a4a4386d9883db1114"
+    "spaceKey": "72c3e3314889480e94caa26cf01abdeb"
   }
 }

@@ -2,16 +2,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expense_tracker_app/core/services/transaction_service.dart';
 import 'package:expense_tracker_app/core/models/transaction.dart';
+import '../../test_helper.dart';
 
 void main() {
   group('TransactionService Tests', () {
     setUpAll(() async {
-      await Hive.initFlutter();
+      // 初始化Hive用于测试
+      await TestHelper.initializeHive();
       await TransactionService.init();
     });
 
     tearDownAll(() async {
-      await Hive.deleteFromDisk();
+      // 清理测试数据
+      await TestHelper.cleanupHive();
+    });
+
+    setUp(() async {
+      // 每个测试前清空数据
+      final allTransactions = await TransactionService.getAllTransactions();
+      for (final t in allTransactions) {
+        await TransactionService.deleteTransaction(t.id);
+      }
     });
 
     test('should add transaction successfully', () async {

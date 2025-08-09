@@ -1,96 +1,61 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import '../models/transaction.dart';
 import 'transaction_service.dart';
+import '../models/transaction.dart';
 
 class ExportService {
-  static Future<String> exportToJson({
-    DateTime? startDate,
-    DateTime? endDate,
+  /// 导出为CSV格式
+  static Future<String> exportToCsv({
+    required DateTime startDate,
+    required DateTime endDate,
   }) async {
-    List<Transaction> transactions;
-    
-    if (startDate != null && endDate != null) {
-      transactions = await TransactionService.getTransactionsByDateRange(
-        startDate,
-        endDate,
-      );
-    } else {
-      transactions = await TransactionService.getAllTransactions();
-    }
+    final transactions = await TransactionService.getTransactionsByDateRange(
+      startDate,
+      endDate,
+    );
 
-    final exportData = {
+    final buffer = StringBuffer();
+    
+    // CSV头部
+    buffer.writeln('日期,标题,金额,分类,类型');
+    
+    // 数据行
+    for (final transaction in transactions) {
+      buffer.writeln([
+        transaction.date.toIso8601String().split('T')[0],
+        transaction.title,
+        transaction.amount.toStringAsFixed(2),
+        transaction.category,
+        transaction.type == TransactionType.income ? '收入' : '支出',
+      ].join(','));
+    }
+    
+    return buffer.toString();
+  }
+
+  /// 导出为JSON格式
+  static Future<String> exportToJson({
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    final transactions = await TransactionService.getTransactionsByDateRange(
+      startDate,
+      endDate,
+    );
+
+    final data = {
       'exportDate': DateTime.now().toIso8601String(),
-      'totalTransactions': transactions.length,
-      'dateRange': {
-        'start': startDate?.toIso8601String(),
-        'end': endDate?.toIso8601String(),
+      'period': {
+        'start': startDate.toIso8601String(),
+        'end': endDate.toIso8601String(),
       },
       'transactions': transactions.map((t) => t.toJson()).toList(),
     };
 
-    return const JsonEncoder.withIndent('  ').convert(exportData);
+    return const JsonEncoder.withIndent('  ').convert(data);
   }
 
-  static Future<String> exportToCsv({
-    DateTime? startDate,
-    DateTime? endDate,
-  }) async {
-    List<Transaction> transactions;
-    
-    if (startDate != null && endDate != null) {
-      transactions = await TransactionService.getTransactionsByDateRange(
-        startDate,
-        endDate,
-      );
-    } else {
-      transactions = await TransactionService.getAllTransactions();
-    }
-
-    final csvBuffer = StringBuffer();
-    
-    // CSV头部
-    csvBuffer.writeln('日期,标题,金额,分类,类型,描述');
-    
-    // 数据行
-    for (final transaction in transactions) {
-      final row = [
-        transaction.date.toIso8601String().split('T')[0],
-        _escapeCsvField(transaction.title),
-        transaction.amount.toString(),
-        _escapeCsvField(transaction.category),
-        transaction.type == TransactionType.income ? '收入' : '支出',
-        _escapeCsvField(transaction.description ?? ''),
-      ];
-      csvBuffer.writeln(row.join(','));
-    }
-
-    return csvBuffer.toString();
-  }
-
-  static String _escapeCsvField(String field) {
-    if (field.contains(',') || field.contains('"') || field.contains('\n')) {
-      return '"${field.replaceAll('"', '""')}"';
-    }
-    return field;
-  }
-
-  static Future<File> saveToFile(String content, String fileName) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/$fileName');
-    return await file.writeAsString(content);
-  }
-
-  static Future<void> shareData(String content, String fileName) async {
-    final file = await saveToFile(content, fileName);
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      text: '记账数据导出 - $fileName',
-    );
-  }
-
+  /// 生成月度报告
   static Future<Map<String, dynamic>> generateMonthlyReport(
     int year,
     int month,
@@ -103,46 +68,45 @@ class ExportService {
       endDate,
     );
 
-    double totalIncome = 0;
-    double totalExpense = 0;
-    final Map<String, double> categoryExpenses = {};
-    final Map<int, double> dailyExpenses = {};
+    final incomeTransactions = transactions
+        .where((t) => t.type == TransactionType.income)
+        .toList();
+    final expenseTransactions = transactions
+        .where((t) => t.type == TransactionType.expense)
+        .toList();
 
-    for (final transaction in transactions) {
-      if (transaction.type == TransactionType.income) {
-        totalIncome += transaction.amount;
-      } else {
-        totalExpense += transaction.amount;
-        
-        // 分类统计
-        categoryExpenses[transaction.category] = 
-            (categoryExpenses[transaction.category] ?? 0) + transaction.amount;
-        
-        // 日期统计
-        final day = transaction.date.day;
-        dailyExpenses[day] = (dailyExpenses[day] ?? 0) + transaction.amount;
-      }
+    final totalIncome = incomeTransactions
+        .fold<double>(0, (sum, t) => sum + t.amount);
+    final totalExpense = expenseTransactions
+        .fold<double>(0, (sum, t) => sum + t.amount);
+
+    // 分类统计
+    final categoryTotals = <String, double>{};
+    for (final transaction in expenseTransactions) {
+      categoryTotals[transaction.category] = 
+          (categoryTotals[transaction.category] ?? 0) + transaction.amount;
     }
 
+    // 排序获取前5个分类
+    final topCategories = categoryTotals.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
     return {
-      'period': '$year年${month}月',
-      'totalTransactions': transactions.length,
+      'period': '${year}年${month}月',
       'totalIncome': totalIncome,
       'totalExpense': totalExpense,
       'netAmount': totalIncome - totalExpense,
-      'categoryBreakdown': categoryExpenses,
-      'dailyExpenses': dailyExpenses,
+      'totalTransactions': transactions.length,
       'averageDailyExpense': totalExpense / DateTime(year, month + 1, 0).day,
-      'topCategories': _getTopCategories(categoryExpenses, 5),
+      'topCategories': topCategories.take(5).toList(),
     };
   }
 
-  static List<MapEntry<String, double>> _getTopCategories(
-    Map<String, double> categories,
-    int limit,
-  ) {
-    final sortedEntries = categories.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    return sortedEntries.take(limit).toList();
+  /// 分享数据
+  static Future<void> shareData(String content, String fileName) async {
+    await Share.share(
+      content,
+      subject: fileName,
+    );
   }
 }

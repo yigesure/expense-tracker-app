@@ -107,7 +107,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                 context,
                 '导出为CSV',
                 '适合Excel等表格软件打开',
-                FluentSystemIcons.ic_fluent_document_table_regular,
+                FluentSystemIcons.ic_fluent_table_regular,
                 () => _exportData('csv'),
               ),
               const SizedBox(height: 12),
@@ -123,7 +123,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                 context,
                 '生成月度报告',
                 '包含详细的统计分析',
-                FluentSystemIcons.ic_fluent_document_pdf_regular,
+                FluentSystemIcons.ic_fluent_document_regular,
                 () => _generateMonthlyReport(),
               ),
               const SizedBox(height: 24),
@@ -297,8 +297,6 @@ ${(report['topCategories'] as List).map((entry) => '- ${entry.key}：¥${entry.v
       }
     }
   }
-}
-
   Widget _buildAppBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -638,7 +636,7 @@ ${(report['topCategories'] as List).map((entry) => '- ${entry.key}：¥${entry.v
       {'title': '平均日支出', 'value': '¥114.02', 'icon': FluentSystemIcons.ic_fluent_calculator_regular},
       {'title': '最大单笔', 'value': '¥580.00', 'icon': FluentSystemIcons.ic_fluent_arrow_up_regular},
       {'title': '消费天数', 'value': '28天', 'icon': FluentSystemIcons.ic_fluent_calendar_regular},
-      {'title': '节余率', 'value': '59.8%', 'icon': FluentSystemIcons.ic_fluent_savings_regular},
+      {'title': '节余率', 'value': '59.8%', 'icon': FluentSystemIcons.ic_fluent_money_regular},
     ];
 
     return GridView.builder(

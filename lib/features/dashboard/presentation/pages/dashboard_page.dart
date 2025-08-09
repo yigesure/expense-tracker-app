@@ -24,26 +24,26 @@ class DashboardPage extends ConsumerWidget {
             // 主要内容区域
             const Expanded(
               child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     
                     // 账户余额卡片
-                    BalanceCard(),
+                    const BalanceCard(),
 
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
                     // 快捷操作
-                    QuickActions(),
+                    const QuickActions(),
 
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     
                     // 今日消费记录
-                    RecentTransactions(),
+                    const RecentTransactions(),
 
-                    SizedBox(height: 100), // 为底部导航栏留出空间
+                    const SizedBox(height: 100), // 为底部导航栏留出空间
                   ],
                 ),
               ),
@@ -89,7 +89,7 @@ class DashboardPage extends ConsumerWidget {
                 BoxShadow(
                   color: AppColors.shadowLight,
                   blurRadius: 8,
-                  offset: Offset(0, 2),
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/models/transaction.dart';
 import '../../../../core/providers/transaction_provider.dart';
@@ -95,7 +95,7 @@ class TransactionDetailPage extends ConsumerWidget {
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(FluentSystemIcons.ic_fluent_edit_regular),
+                      Icon(MdiIcons.pencil),
                       SizedBox(width: 8),
                       Text('编辑'),
                     ],
@@ -105,7 +105,7 @@ class TransactionDetailPage extends ConsumerWidget {
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(FluentSystemIcons.ic_fluent_delete_regular, color: AppColors.error),
+                      Icon(MdiIcons.delete, color: AppColors.error),
                       SizedBox(width: 8),
                       Text('删除', style: TextStyle(color: AppColors.error)),
                     ],
@@ -207,34 +207,34 @@ class TransactionDetailPage extends ConsumerWidget {
           _buildDetailItem(
             '分类',
             transaction.category,
-            FluentSystemIcons.ic_fluent_tag_regular,
+            MdiIcons.tag,
           ),
           const SizedBox(height: 16),
           _buildDetailItem(
             '类型',
             transaction.type == TransactionType.income ? '收入' : '支出',
             transaction.type == TransactionType.income
-                ? FluentSystemIcons.ic_fluent_arrow_down_regular
-                : FluentSystemIcons.ic_fluent_arrow_up_regular,
+                ? MdiIcons.arrowDown
+                : MdiIcons.arrowUp,
           ),
           const SizedBox(height: 16),
           _buildDetailItem(
             '日期',
             '${transaction.date.year}年${transaction.date.month}月${transaction.date.day}日',
-            FluentSystemIcons.ic_fluent_calendar_regular,
+            MdiIcons.calendar,
           ),
           const SizedBox(height: 16),
           _buildDetailItem(
             '时间',
             '${transaction.date.hour.toString().padLeft(2, '0')}:${transaction.date.minute.toString().padLeft(2, '0')}',
-            FluentSystemIcons.ic_fluent_clock_regular,
+            MdiIcons.clock,
           ),
           if (transaction.description != null && transaction.description!.isNotEmpty) ...[
             const SizedBox(height: 16),
             _buildDetailItem(
               '备注',
               transaction.description!,
-              FluentSystemIcons.ic_fluent_note_regular,
+              MdiIcons.note,
             ),
           ],
         ],
@@ -293,7 +293,7 @@ class TransactionDetailPage extends ConsumerWidget {
         Expanded(
           child: ElevatedButton.icon(
             onPressed: () => _editTransaction(context),
-            icon: const Icon(FluentSystemIcons.ic_fluent_edit_regular),
+            icon: const Icon(MdiIcons.pencil),
             label: const Text('编辑'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.gradientPurpleStart,
@@ -309,7 +309,7 @@ class TransactionDetailPage extends ConsumerWidget {
         Expanded(
           child: ElevatedButton.icon(
             onPressed: () => _deleteTransaction(context, ref),
-            icon: const Icon(FluentSystemIcons.ic_fluent_delete_regular),
+            icon: const Icon(MdiIcons.delete),
             label: const Text('删除'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.error,

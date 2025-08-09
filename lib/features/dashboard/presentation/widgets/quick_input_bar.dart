@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/services/nlp_service.dart';
 import '../../../../core/providers/transaction_provider.dart';
@@ -111,7 +110,7 @@ class _QuickInputBarState extends ConsumerState<QuickInputBar>
                   child: Transform.rotate(
                     angle: _rotationAnimation.value * 2 * 3.14159,
                     child: const Icon(
-                      FluentSystemIcons.ic_fluent_add_filled,
+                      Icons.add,
                       color: Colors.white,
                       size: 28,
                     ),

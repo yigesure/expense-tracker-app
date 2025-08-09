@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
 import 'ai_chat_page.dart';
@@ -43,7 +42,7 @@ class AiAssistantPage extends ConsumerWidget {
                         ],
                       ),
                       child: const Icon(
-                        FluentSystemIcons.ic_fluent_bot_filled,
+                        Icons.smart_toy,
                         color: Colors.white,
                         size: 60,
                       ),
@@ -110,7 +109,7 @@ class AiAssistantPage extends ConsumerWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const Icon(
-                                    FluentSystemIcons.ic_fluent_chat_filled,
+                                    Icons.chat,
                                     color: Colors.white,
                                     size: 20,
                                   ),
@@ -173,7 +172,7 @@ class AiAssistantPage extends ConsumerWidget {
                   );
                 },
               icon: const Icon(
-                FluentSystemIcons.ic_fluent_settings_regular,
+                Icons.settings,
                 color: AppColors.textPrimary,
               ),
             ),
@@ -192,13 +191,13 @@ class AiAssistantPage extends ConsumerWidget {
         'color': AppColors.softBlue,
       },
       {
-        'icon': FluentSystemIcons.ic_fluent_lightbulb_regular,
+        'icon': Icons.lightbulb_outline,
         'title': '智能分析',
         'description': '消费习惯分析\n个性化建议',
         'color': AppColors.gradientPurpleStart,
       },
       {
-        'icon': FluentSystemIcons.ic_fluent_chat_help_filled,
+        'icon': Icons.help,
         'title': '问答助手',
         'description': '询问消费情况\n获取理财建议',
         'color': AppColors.success,

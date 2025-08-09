@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 
 /// 日历页面
@@ -92,7 +91,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
                     });
                   },
                   icon: const Icon(
-                    FluentSystemIcons.ic_fluent_calendar_regular,
+                    Icons.calendar_month,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -115,7 +114,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
                     _generateMonthlyReport(context);
                   },
                   icon: const Icon(
-                    FluentSystemIcons.ic_fluent_document_regular,
+                    Icons.description,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -166,7 +165,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
                       });
                     },
                     icon: const Icon(
-                      FluentSystemIcons.ic_fluent_chevron_left_regular,
+                      Icons.chevron_left,
                       color: Colors.white,
                       size: 20,
                     ),
@@ -181,7 +180,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
                       });
                     },
                     icon: const Icon(
-                      FluentSystemIcons.ic_fluent_chevron_right_regular,
+                      Icons.chevron_right,
                       color: Colors.white,
                       size: 20,
                     ),
@@ -617,7 +616,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
                 context,
                 '详细报告',
                 '包含每日消费明细和分类统计',
-                FluentSystemIcons.ic_fluent_document_text_regular,
+                Icons.description,
                 () => _generateDetailedReport(),
               ),
               
@@ -627,7 +626,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
                 context,
                 '图表报告',
                 '可视化消费趋势和分类占比',
-                FluentSystemIcons.ic_fluent_chart_multiple_regular,
+                Icons.bar_chart,
                 () => _generateChartReport(),
               ),
               
@@ -637,7 +636,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
                 context,
                 '简要总结',
                 '月度消费概览和建议',
-                FluentSystemIcons.ic_fluent_document_bullet_list_regular,
+                Icons.list_alt,
                 () => _generateSummaryReport(),
               ),
               
@@ -712,7 +711,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
             ),
             
             const Icon(
-              FluentSystemIcons.ic_fluent_chevron_right_regular,
+              Icons.chevron_right,
               color: AppColors.textHint,
               size: 20,
             ),

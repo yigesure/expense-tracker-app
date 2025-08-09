@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:flutter/material.dart' show Icons;
 import '../../../../core/theme/app_colors.dart';
 
 class AIChatPage extends ConsumerStatefulWidget {
@@ -53,7 +53,7 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(
-                FluentSystemIcons.ic_fluent_bot_filled,
+                MdiIcons.robot,
                 color: Colors.white,
                 size: 16,
               ),
@@ -85,7 +85,7 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(
-            FluentSystemIcons.ic_fluent_arrow_left_regular,
+            Icons.arrow_back,
             color: AppColors.textPrimary,
           ),
         ),
@@ -93,7 +93,7 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
           IconButton(
             onPressed: _clearChat,
             icon: const Icon(
-              FluentSystemIcons.ic_fluent_delete_regular,
+              Icons.delete_outline,
               color: AppColors.textSecondary,
             ),
           ),
@@ -213,7 +213,7 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(
-                FluentSystemIcons.ic_fluent_person_filled,
+                Icons.person,
                 color: Colors.white,
                 size: 16,
               ),
@@ -247,7 +247,7 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
             child: IconButton(
               onPressed: _startVoiceInput,
               icon: const Icon(
-                FluentSystemIcons.ic_fluent_mic_regular,
+                Icons.mic,
                 color: AppColors.textSecondary,
               ),
             ),
@@ -298,7 +298,7 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
             child: IconButton(
               onPressed: _sendMessage,
               icon: const Icon(
-                FluentSystemIcons.ic_fluent_send_filled,
+                Icons.send,
                 color: Colors.white,
               ),
             ),

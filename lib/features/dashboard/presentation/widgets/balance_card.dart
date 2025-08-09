@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/providers/data_providers.dart';
 
@@ -139,7 +139,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                         child: _buildIncomeExpenseItem(
                           '本月收入',
                           monthlyIncome,
-                          FluentSystemIcons.ic_fluent_arrow_up_filled,
+                          MdiIcons.arrowUp,
                           AppColors.success,
                         ),
                       ),
@@ -153,7 +153,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                         child: _buildIncomeExpenseItem(
                           '本月支出',
                           monthlyExpense,
-                          FluentSystemIcons.ic_fluent_arrow_down_filled,
+                          MdiIcons.arrowDown,
                           AppColors.error,
                         ),
                       ),

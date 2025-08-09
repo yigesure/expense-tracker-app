@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/providers/data_providers.dart';
 import '../../../../core/models/transaction.dart';
@@ -56,7 +56,7 @@ class RecentTransactions extends ConsumerWidget {
                     ),
                     const SizedBox(width: 4),
                     const Icon(
-                      FluentSystemIcons.ic_fluent_chevron_right_regular,
+                      MdiIcons.chevronRight,
                       color: AppColors.gradientPurpleStart,
                       size: 16,
                     ),
@@ -253,7 +253,7 @@ class RecentTransactions extends ConsumerWidget {
                       child: Row(
                         children: [
                           Icon(
-                            FluentSystemIcons.ic_fluent_edit_regular,
+                            MdiIcons.pencil,
                             size: 16,
                             color: AppColors.textSecondary,
                           ),
@@ -267,7 +267,7 @@ class RecentTransactions extends ConsumerWidget {
                       child: Row(
                         children: [
                           Icon(
-                            FluentSystemIcons.ic_fluent_delete_regular,
+                            MdiIcons.delete,
                             size: 16,
                             color: AppColors.error,
                           ),

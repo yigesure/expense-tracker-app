@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/services/export_service.dart';
 
@@ -107,7 +106,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                 context,
                 '导出为CSV',
                 '适合Excel等表格软件打开',
-                FluentSystemIcons.ic_fluent_table_regular,
+                MdiIcons.table,
                 () => _exportData('csv'),
               ),
               const SizedBox(height: 12),
@@ -115,7 +114,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                 context,
                 '导出为JSON',
                 '包含完整的数据结构信息',
-                FluentSystemIcons.ic_fluent_code_regular,
+                Icons.code,
                 () => _exportData('json'),
               ),
               const SizedBox(height: 12),
@@ -123,7 +122,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                 context,
                 '生成月度报告',
                 '包含详细的统计分析',
-                FluentSystemIcons.ic_fluent_document_regular,
+                Icons.description_outlined,
                 () => _generateMonthlyReport(),
               ),
               const SizedBox(height: 24),
@@ -324,7 +323,7 @@ ${(report['topCategories'] as List).map((entry) => '- ${entry.key}：¥${entry.v
             child: IconButton(
                 onPressed: () => _showExportDialog(context),
               icon: const Icon(
-                FluentSystemIcons.ic_fluent_share_regular,
+                Icons.share,
                 color: AppColors.textPrimary,
               ),
             ),
@@ -633,10 +632,10 @@ ${(report['topCategories'] as List).map((entry) => '- ${entry.key}：¥${entry.v
 
   Widget _buildMonthlyStats() {
     final stats = [
-      {'title': '平均日支出', 'value': '¥114.02', 'icon': FluentSystemIcons.ic_fluent_calculator_regular},
-      {'title': '最大单笔', 'value': '¥580.00', 'icon': FluentSystemIcons.ic_fluent_arrow_up_regular},
-      {'title': '消费天数', 'value': '28天', 'icon': FluentSystemIcons.ic_fluent_calendar_regular},
-      {'title': '节余率', 'value': '59.8%', 'icon': FluentSystemIcons.ic_fluent_money_regular},
+      {'title': '平均日支出', 'value': '¥114.02', 'icon': Icons.calculate_outlined},
+      {'title': '最大单笔', 'value': '¥580.00', 'icon': Icons.arrow_upward_outlined},
+      {'title': '消费天数', 'value': '28天', 'icon': Icons.calendar_today_outlined},
+      {'title': '节余率', 'value': '59.8%', 'icon': Icons.attach_money},
     ];
 
     return GridView.builder(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/models/transaction.dart';
 import '../../../../core/providers/transaction_provider.dart';
@@ -90,7 +89,7 @@ class _TransactionListPageState extends ConsumerState<TransactionListPage> {
             child: IconButton(
               onPressed: _showSearchDialog,
               icon: const Icon(
-                FluentSystemIcons.ic_fluent_search_regular,
+                Icons.search,
                 color: AppColors.textPrimary,
               ),
             ),
@@ -142,7 +141,7 @@ class _TransactionListPageState extends ConsumerState<TransactionListPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      FluentSystemIcons.ic_fluent_arrow_sort_regular,
+                      Icons.sort,
                       size: 16,
                       color: AppColors.textSecondary,
                     ),
@@ -411,7 +410,7 @@ class _TransactionListPageState extends ConsumerState<TransactionListPage> {
               borderRadius: BorderRadius.circular(40),
             ),
             child: const Icon(
-              FluentSystemIcons.ic_fluent_receipt_regular,
+              Icons.receipt_long,
               color: AppColors.gradientPurpleStart,
               size: 40,
             ),

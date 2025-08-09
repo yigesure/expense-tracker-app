@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -26,7 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(
-            FluentSystemIcons.ic_fluent_arrow_left_regular,
+            Icons.arrow_back,
             color: AppColors.textPrimary,
           ),
         ),
@@ -37,19 +36,19 @@ class _SettingsPageState extends State<SettingsPage> {
           // 账户设置
           _buildSectionHeader('账户设置'),
           _buildSettingsTile(
-            icon: FluentSystemIcons.ic_fluent_person_regular,
+            icon: Icons.person_outlined,
             title: '个人资料',
             subtitle: '管理您的个人信息',
             onTap: () => _showComingSoon('个人资料'),
           ),
           _buildSettingsTile(
-            icon: FluentSystemIcons.ic_fluent_shield_regular,
+            icon: Icons.security,
             title: '隐私与安全',
             subtitle: '账户安全设置',
             onTap: () => _showComingSoon('隐私与安全'),
           ),
           _buildSwitchTile(
-            icon: FluentSystemIcons.ic_fluent_fingerprint_regular,
+            icon: Icons.fingerprint,
             title: '生物识别',
             subtitle: '使用指纹或面部识别',
             value: _biometricEnabled,
@@ -65,7 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
           // 应用设置
           _buildSectionHeader('应用设置'),
           _buildSwitchTile(
-            icon: FluentSystemIcons.ic_fluent_alert_regular,
+            icon: Icons.notifications_outlined,
             title: '推送通知',
             subtitle: '接收消费提醒和账单通知',
             value: _notificationsEnabled,
@@ -76,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           _buildSwitchTile(
-            icon: FluentSystemIcons.ic_fluent_dark_theme_regular,
+            icon: Icons.dark_mode_outlined,
             title: '深色模式',
             subtitle: '使用深色主题',
             value: _darkModeEnabled,
@@ -87,7 +86,7 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           _buildDropdownTile(
-            icon: FluentSystemIcons.ic_fluent_money_regular,
+            icon: Icons.attach_money,
             title: '默认货币',
             subtitle: '选择默认显示货币',
             value: _currency,
@@ -104,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           _buildDropdownTile(
-            icon: FluentSystemIcons.ic_fluent_local_language_regular,
+            icon: Icons.language,
             title: '语言',
             subtitle: '选择应用语言',
             value: _language,
@@ -125,19 +124,19 @@ class _SettingsPageState extends State<SettingsPage> {
           // 数据管理
           _buildSectionHeader('数据管理'),
           _buildSettingsTile(
-            icon: FluentSystemIcons.ic_fluent_cloud_sync_regular,
+            icon: Icons.cloud_sync_outlined,
             title: '数据同步',
             subtitle: '云端备份与同步',
             onTap: () => _showComingSoon('数据同步'),
           ),
           _buildSettingsTile(
-            icon: FluentSystemIcons.ic_fluent_document_arrow_down_regular,
+            icon: Icons.download,
             title: '导出数据',
             subtitle: '导出所有消费记录',
             onTap: () => _showComingSoon('导出数据'),
           ),
           _buildSettingsTile(
-            icon: FluentSystemIcons.ic_fluent_delete_regular,
+            icon: Icons.delete_outlined,
             title: '清除数据',
             subtitle: '删除所有本地数据',
             onTap: () => _showClearDataDialog(),
@@ -149,19 +148,19 @@ class _SettingsPageState extends State<SettingsPage> {
           // 帮助与支持
           _buildSectionHeader('帮助与支持'),
           _buildSettingsTile(
-            icon: FluentSystemIcons.ic_fluent_question_circle_regular,
+            icon: Icons.help_outline,
             title: '帮助中心',
             subtitle: '常见问题与使用指南',
             onTap: () => _showComingSoon('帮助中心'),
           ),
           _buildSettingsTile(
-            icon: FluentSystemIcons.ic_fluent_mail_regular,
+            icon: Icons.email_outlined,
             title: '联系我们',
             subtitle: '反馈问题或建议',
             onTap: () => _showComingSoon('联系我们'),
           ),
           _buildSettingsTile(
-            icon: FluentSystemIcons.ic_fluent_info_regular,
+            icon: Icons.info_outlined,
             title: '关于应用',
             subtitle: '版本信息与开发者',
             onTap: () => _showAboutDialog(),
@@ -224,7 +223,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
         trailing: const Icon(
-          FluentSystemIcons.ic_fluent_chevron_right_regular,
+          Icons.chevron_right,
           color: AppColors.textHint,
           size: 20,
         ),
@@ -335,7 +334,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
         ),
         trailing: const Icon(
-          FluentSystemIcons.ic_fluent_chevron_right_regular,
+          Icons.chevron_right,
           color: AppColors.textHint,
           size: 20,
         ),
@@ -438,7 +437,7 @@ class _SettingsPageState extends State<SettingsPage> {
           borderRadius: BorderRadius.circular(16),
         ),
         child: const Icon(
-          FluentSystemIcons.ic_fluent_money_regular,
+          Icons.attach_money,
           color: Colors.white,
           size: 32,
         ),

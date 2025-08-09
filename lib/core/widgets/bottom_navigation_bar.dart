@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../theme/app_colors.dart';
 
 /// 自定义底部导航栏
@@ -34,32 +34,32 @@ class CustomBottomNavigationBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(
-                icon: FluentSystemIcons.ic_fluent_home_regular,
-                activeIcon: FluentSystemIcons.ic_fluent_home_filled,
+                icon: Icons.home_outlined,
+                activeIcon: Icons.home,
                 label: '首页',
                 index: 0,
               ),
               _buildNavItem(
-                icon: FluentSystemIcons.ic_fluent_data_pie_regular,
-                activeIcon: FluentSystemIcons.ic_fluent_data_pie_filled,
+                icon: Icons.pie_chart_outlined,
+                activeIcon: Icons.pie_chart,
                 label: '统计',
                 index: 1,
               ),
               _buildNavItem(
-                icon: FluentSystemIcons.ic_fluent_bot_regular,
-                activeIcon: FluentSystemIcons.ic_fluent_bot_filled,
+                icon: Icons.smart_toy_outlined,
+                activeIcon: Icons.smart_toy,
                 label: 'AI助手',
                 index: 2,
               ),
               _buildNavItem(
-                icon: FluentSystemIcons.ic_fluent_calendar_regular,
-                activeIcon: FluentSystemIcons.ic_fluent_calendar_filled,
+                icon: Icons.calendar_today_outlined,
+                activeIcon: Icons.calendar_today,
                 label: '日历',
                 index: 3,
               ),
               _buildNavItem(
-                icon: FluentSystemIcons.ic_fluent_settings_regular,
-                activeIcon: FluentSystemIcons.ic_fluent_settings_filled,
+                icon: Icons.settings_outlined,
+                activeIcon: Icons.settings,
                 label: '设置',
                 index: 4,
               ),

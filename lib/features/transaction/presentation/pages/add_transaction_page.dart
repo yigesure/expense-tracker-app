@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:flutter/material.dart' show Icons;
 import 'package:uuid/uuid.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/models/transaction.dart';
@@ -170,7 +170,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        FluentSystemIcons.ic_fluent_arrow_up_regular,
+                        Icons.arrow_upward,
                         color: _selectedType == TransactionType.expense
                             ? Colors.white
                             : AppColors.textSecondary,
@@ -218,7 +218,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        FluentSystemIcons.ic_fluent_arrow_down_regular,
+                        Icons.arrow_downward,
                         color: _selectedType == TransactionType.income
                             ? Colors.white
                             : AppColors.textSecondary,
@@ -392,7 +392,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
             child: Row(
               children: [
                 const Icon(
-                  FluentSystemIcons.ic_fluent_calendar_regular,
+                  Icons.calendar_today,
                   color: AppColors.textSecondary,
                 ),
                 const SizedBox(width: 12),

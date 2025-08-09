@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../transaction/presentation/pages/add_transaction_page.dart';
 import '../../../statistics/presentation/pages/statistics_page.dart';
@@ -33,7 +33,7 @@ class QuickActions extends StatelessWidget {
               _buildActionCard(
                 context,
                 '记一笔',
-                FluentSystemIcons.ic_fluent_add_circle_filled,
+                MdiIcons.plusCircle,
                 AppColors.primaryGradient,
                 () {
                   Navigator.push(
@@ -47,7 +47,7 @@ class QuickActions extends StatelessWidget {
               _buildActionCard(
                 context,
                 '转账',
-                FluentSystemIcons.ic_fluent_arrow_swap_filled,
+                MdiIcons.swapHorizontal,
                 AppColors.blueGradient,
                 () {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -61,7 +61,7 @@ class QuickActions extends StatelessWidget {
               _buildActionCard(
                 context,
                 '预算',
-                FluentSystemIcons.ic_fluent_target_filled,
+                MdiIcons.target,
                 AppColors.incomeGradient,
                 () {
                   ScaffoldMessenger.of(context).showSnackBar(

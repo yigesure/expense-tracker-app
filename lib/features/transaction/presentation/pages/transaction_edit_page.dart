@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/models/transaction.dart';
 import '../../../../core/providers/transaction_provider.dart';
@@ -169,9 +169,9 @@ class _TransactionEditPageState extends ConsumerState<TransactionEditPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        FluentSystemIcons.ic_fluent_arrow_up_regular,
-                        color: _selectedType == TransactionType.expense
-                            ? Colors.white
+                        MdiIcons.arrowDown,
+                        color: _selectedType == TransactionType.income
+                            ? AppColors.success
                             : AppColors.textSecondary,
                       ),
                       const SizedBox(width: 8),
@@ -385,7 +385,7 @@ class _TransactionEditPageState extends ConsumerState<TransactionEditPage> {
             child: Row(
               children: [
                 const Icon(
-                  FluentSystemIcons.ic_fluent_calendar_regular,
+                  MdiIcons.calendar,
                   color: AppColors.textSecondary,
                 ),
                 const SizedBox(width: 12),

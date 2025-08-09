@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../transaction/presentation/pages/add_transaction_page.dart';
+import '../../../statistics/presentation/pages/statistics_page.dart';
 
 /// 快捷操作组件
 class QuickActions extends StatelessWidget {
@@ -34,7 +36,12 @@ class QuickActions extends StatelessWidget {
                 FluentSystemIcons.ic_fluent_add_circle_filled,
                 AppColors.primaryGradient,
                 () {
-                  // TODO: 打开记账页面
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddTransactionPage(),
+                    ),
+                  );
                 },
               ),
               _buildActionCard(
@@ -43,7 +50,12 @@ class QuickActions extends StatelessWidget {
                 FluentSystemIcons.ic_fluent_arrow_swap_filled,
                 AppColors.blueGradient,
                 () {
-                  // TODO: 打开转账页面
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('转账功能正在开发中，敬请期待！'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
                 },
               ),
               _buildActionCard(
@@ -52,7 +64,12 @@ class QuickActions extends StatelessWidget {
                 FluentSystemIcons.ic_fluent_target_filled,
                 AppColors.incomeGradient,
                 () {
-                  // TODO: 打开预算页面
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('预算管理功能正在开发中，敬请期待！'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
                 },
               ),
               _buildActionCard(
@@ -61,7 +78,12 @@ class QuickActions extends StatelessWidget {
                 Icons.analytics,
                 AppColors.expenseGradient,
                 () {
-                  // TODO: 打开分析页面
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const StatisticsPage(),
+                    ),
+                  );
                 },
               ),
             ],

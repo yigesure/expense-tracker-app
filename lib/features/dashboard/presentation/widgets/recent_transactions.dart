@@ -4,6 +4,9 @@ import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/providers/data_providers.dart';
 import '../../../../core/models/transaction.dart';
+import '../../../transaction/presentation/pages/transaction_detail_page.dart';
+import '../../../transaction/presentation/pages/transaction_edit_page.dart';
+import '../../../transaction/presentation/pages/transaction_list_page.dart';
 
 /// 最近交易记录组件
 class RecentTransactions extends ConsumerWidget {
@@ -34,7 +37,12 @@ class RecentTransactions extends ConsumerWidget {
               ),
               TextButton(
                 onPressed: () {
-                  // TODO: 查看全部交易记录
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TransactionListPage(),
+                    ),
+                  );
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -100,7 +108,12 @@ class RecentTransactions extends ConsumerWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
-            // TODO: 显示交易详情
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TransactionDetailPage(transaction: transaction),
+              ),
+            );
           },
           child: Container(
             padding: const EdgeInsets.all(16),
@@ -222,7 +235,12 @@ class RecentTransactions extends ConsumerWidget {
                   onSelected: (value) {
                     switch (value) {
                       case 'edit':
-                        // TODO: 编辑交易
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TransactionEditPage(transaction: transaction),
+                          ),
+                        );
                         break;
                       case 'delete':
                         _showDeleteDialog(context, transaction, ref);

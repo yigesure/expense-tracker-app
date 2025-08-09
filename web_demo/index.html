@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人记账助手 - 演示版</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <h1>个人记账助手</h1>
+            <div class="user-avatar">👤</div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 余额卡片 -->
+            <div class="balance-card">
+                <div class="balance-info">
+                    <h2>总余额</h2>
+                    <div class="balance-amount">¥12,580.50</div>
+                </div>
+                <div class="balance-trend">
+                    <span class="trend-up">↗ +5.2%</span>
+                </div>
+            </div>
+
+            <!-- 收支概览 -->
+            <div class="overview-cards">
+                <div class="overview-card income">
+                    <div class="card-icon">📈</div>
+                    <div class="card-info">
+                        <h3>本月收入</h3>
+                        <div class="amount">¥8,500.00</div>
+                    </div>
+                </div>
+                <div class="overview-card expense">
+                    <div class="card-icon">📉</div>
+                    <div class="card-info">
+                        <h3>本月支出</h3>
+                        <div class="amount">¥3,240.80</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快速记账 -->
+            <div class="quick-input">
+                <h3>快速记账</h3>
+                <div class="input-tabs">
+                    <button class="tab-btn active" data-type="expense">支出</button>
+                    <button class="tab-btn" data-type="income">收入</button>
+                </div>
+                <div class="input-form">
+                    <input type="number" placeholder="金额" class="amount-input">
+                    <select class="category-select">
+                        <option>餐饮</option>
+                        <option>交通</option>
+                        <option>购物</option>
+                        <option>娱乐</option>
+                        <option>其他</option>
+                    </select>
+                    <input type="text" placeholder="备注" class="note-input">
+                    <button class="add-btn">添加记录</button>
+                </div>
+            </div>
+
+            <!-- 最近交易 -->
+            <div class="recent-transactions">
+                <h3>最近交易</h3>
+                <div class="transaction-list">
+                    <div class="transaction-item">
+                        <div class="transaction-icon">🍔</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">午餐</div>
+                            <div class="transaction-time">今天 12:30</div>
+                        </div>
+                        <div class="transaction-amount expense">-¥35.00</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">🚇</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">地铁</div>
+                            <div class="transaction-time">今天 09:15</div>
+                        </div>
+                        <div class="transaction-amount expense">-¥6.00</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">💰</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">工资</div>
+                            <div class="transaction-time">昨天</div>
+                        </div>
+                        <div class="transaction-amount income">+¥8,500.00</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 底部导航 -->
+        <nav class="bottom-nav">
+            <div class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">首页</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">统计</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span class="nav-label">日历</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-label">AI助手</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">设置</span>
+            </div>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

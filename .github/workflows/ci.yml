@@ -1,0 +1,112 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.16.0'
+        channel: 'stable'
+    
+    - name: Get dependencies
+      run: flutter pub get
+    
+    - name: Run code generation
+      run: flutter packages pub run build_runner build --delete-conflicting-outputs
+    
+    - name: Analyze code
+      run: flutter analyze
+    
+    - name: Run tests
+      run: flutter test --coverage
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: coverage/lcov.info
+
+  build-android:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.16.0'
+        channel: 'stable'
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '11'
+    
+    - name: Get dependencies
+      run: flutter pub get
+    
+    - name: Run code generation
+      run: flutter packages pub run build_runner build --delete-conflicting-outputs
+    
+    - name: Build APK
+      run: flutter build apk --release --split-per-abi
+    
+    - name: Build App Bundle
+      run: flutter build appbundle --release
+    
+    - name: Sign APK
+      uses: r0adkll/sign-android-release@v1
+      id: sign_app
+      with:
+        releaseDirectory: build/app/outputs/flutter-apk
+        signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+        alias: ${{ secrets.ALIAS }}
+        keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
+    
+    - name: Upload APK artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-apk
+        path: build/app/outputs/flutter-apk/*.apk
+    
+    - name: Upload App Bundle artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-aab
+        path: build/app/outputs/bundle/release/*.aab
+
+  ui-test:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.16.0'
+        channel: 'stable'
+    
+    - name: Get dependencies
+      run: flutter pub get
+    
+    - name: Run integration tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        script: flutter test integration_test/

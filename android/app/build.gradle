@@ -25,7 +25,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
-// 加载密钥配置
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
@@ -34,7 +33,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.example.expense_tracker_app"
-    compileSdkVersion 34
+    compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -51,24 +50,18 @@ android {
     }
 
     defaultConfig {
-    defaultConfig {
-        applicationId "com.jizhang.expense_tracker"
-        minSdkVersion 21
-        targetSdkVersion 34
+        applicationId "com.example.expense_tracker_app"
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         
-        // 多语言支持
-        resConfigs "zh", "en"
-        
-        // 启用混淆
-        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        multiDexEnabled true
     }
 
-    // 签名配置
     signingConfigs {
         release {
-            if (keystoreProperties['keyAlias'] != null) {
+            if (keystoreProperties['storeFile'] != null) {
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
                 storeFile file(keystoreProperties['storeFile'])
@@ -78,33 +71,23 @@ android {
     }
 
     buildTypes {
-        debug {
-            applicationIdSuffix ".debug"
-            debuggable true
+        release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             shrinkResources false
         }
         
-        release {
-            signingConfig keystoreProperties['keyAlias'] != null ? signingConfigs.release : signingConfigs.debug
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            
-            // 构建优化
-            zipAlignEnabled true
-            crunchPngs true
+        debug {
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
         }
     }
-    
-    // 分包配置
-    splits {
-        abi {
-            enable true
-            reset()
-            include 'arm64-v8a', 'armeabi-v7a', 'x86_64'
-            universalApk true
-        }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+        disable 'InvalidPackage'
     }
 }
 

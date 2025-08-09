@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/app_colors.dart';
+import 'core/services/transaction_service.dart';
 import 'features/main/presentation/pages/main_page.dart';
 
 void main() async {

@@ -6,37 +6,32 @@
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
 
-# Gson规则
--keepattributes Signature
+# Dart相关规则
+-dontwarn io.flutter.embedding.**
+
+# 保持注解
 -keepattributes *Annotation*
--dontwarn sun.misc.**
--keep class com.google.gson.** { *; }
--keep class * implements com.google.gson.TypeAdapterFactory
--keep class * implements com.google.gson.JsonSerializer
--keep class * implements com.google.gson.JsonDeserializer
 
-# 保留数据模型类
--keep class com.jizhang.expense_tracker.model.** { *; }
+# 保持行号信息，方便调试
+-keepattributes SourceFile,LineNumberTable
 
-# 保留枚举
+# 保持泛型信息
+-keepattributes Signature
+
+# 保持异常信息
+-keepattributes Exceptions
+
+# Hive数据库相关
+-keep class hive.** { *; }
+-keep class **$HiveFieldAdapter { *; }
+
+# JSON序列化相关
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# 保持枚举类
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
-}
-
-# 保留Parcelable
--keep class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator *;
-}
-
-# 保留Serializable
--keepnames class * implements java.io.Serializable
--keepclassmembers class * implements java.io.Serializable {
-    static final long serialVersionUID;
-    private static final java.io.ObjectStreamField[] serialPersistentFields;
-    !static !transient <fields>;
-    private void writeObject(java.io.ObjectOutputStream);
-    private void readObject(java.io.ObjectInputStream);
-    java.lang.Object writeReplace();
-    java.lang.Object readResolve();
 }

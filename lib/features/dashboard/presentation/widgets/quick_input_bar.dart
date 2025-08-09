@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/services/nlp_service.dart';
+import '../../../../core/providers/transaction_provider.dart';
 
 /// 快捷输入栏组件
-class QuickInputBar extends StatefulWidget {
+class QuickInputBar extends ConsumerStatefulWidget {
   const QuickInputBar({super.key});
 
   @override
-  State<QuickInputBar> createState() => _QuickInputBarState();
+  ConsumerState<QuickInputBar> createState() => _QuickInputBarState();
 }
 
-class _QuickInputBarState extends State<QuickInputBar>
+class _QuickInputBarState extends ConsumerState<QuickInputBar>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotationAnimation;
+  final TextEditingController _textController = TextEditingController();
   bool _isExpanded = false;
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -45,6 +50,7 @@ class _QuickInputBarState extends State<QuickInputBar>
   @override
   void dispose() {
     _animationController.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
@@ -96,10 +102,10 @@ class _QuickInputBarState extends State<QuickInputBar>
             ),
             child: Material(
               color: Colors.transparent,
-                child: InkWell(
+              child: InkWell(
                 borderRadius: BorderRadius.circular(28),
                 onTap: _toggleExpanded,
-                child: const SizedBox(
+                child: SizedBox(
                   width: 56,
                   height: 56,
                   child: Transform.rotate(
@@ -180,11 +186,12 @@ class _QuickInputBarState extends State<QuickInputBar>
                 )),
               ),
               child: TextField(
+                controller: _textController,
                 maxLines: 3,
                 decoration: const InputDecoration(
                   hintText: '输入消费记录...\n例如：红牛6.5，午饭20元，公交2元',
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.all(16),
+                  contentPadding: EdgeInsets.all(16),
                   hintStyle: TextStyle(
                     color: AppColors.textHint,
                     fontSize: 14,
@@ -210,7 +217,12 @@ class _QuickInputBarState extends State<QuickInputBar>
                   ),
                   child: IconButton(
                     onPressed: () {
-                      // TODO: 实现语音输入
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('语音输入功能正在开发中，敬请期待！'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
                     },
                     icon: const Icon(
                       Icons.mic,
@@ -224,10 +236,7 @@ class _QuickInputBarState extends State<QuickInputBar>
                 // 确认按钮
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      // TODO: 处理输入并添加记录
-                      Navigator.pop(context);
-                    },
+                    onPressed: _isProcessing ? null : _processInput,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.gradientPurpleStart,
                       foregroundColor: Colors.white,
@@ -236,13 +245,22 @@ class _QuickInputBarState extends State<QuickInputBar>
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                     ),
-                    child: const Text(
-                      '添加记录',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    child: _isProcessing
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : const Text(
+                            '添加记录',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                   ),
                 ),
               ],
@@ -278,10 +296,66 @@ class _QuickInputBarState extends State<QuickInputBar>
     );
   }
 
+  Future<void> _processInput() async {
+    final input = _textController.text.trim();
+    if (input.isEmpty) return;
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    try {
+      final transactions = NLPService.parseNaturalLanguage(input);
+      if (transactions.isNotEmpty) {
+        await ref.read(transactionListProvider.notifier).addMultipleTransactions(transactions);
+        _textController.clear();
+        Navigator.pop(context);
+        
+        // 显示成功提示
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('成功添加 ${transactions.length} 条记录'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      } else {
+        // 显示错误提示
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('无法识别输入内容，请检查格式'),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('添加失败：$e'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
+    }
+  }
+
   Widget _buildCategoryChip(String label, String emoji) {
     return GestureDetector(
       onTap: () {
-        // TODO: 选择分类
+        _textController.text = '${_textController.text}$label ';
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

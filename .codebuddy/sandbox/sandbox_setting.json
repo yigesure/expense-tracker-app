@@ -1,0 +1,20 @@
+{
+  "path": "c:\\Users\\23828\\Desktop\\expense-tracker-app-main\\web_demo",
+  "desc": "这是一个现代化的个人记账应用演示版，使用HTML/CSS/JavaScript开发，具有仪表板、收支记录、交易历史等功能，支持快速记账和数据展示。",
+  "id": "a9ee048295ca41a4a4386d9883db1114",
+  "data": {
+    "spaceKey": "a9ee048295ca41a4a4386d9883db1114",
+    "connections": {
+      "webIDE": "https://a9ee048295ca41a4a4386d9883db1114.ap-singapore.cloudstudio.club",
+      "preview": "https://a9ee048295ca41a4a4386d9883db1114--{port}.ap-singapore.cloudstudio.club",
+      "api": "https://a9ee048295ca41a4a4386d9883db1114--api.ap-singapore.cloudstudio.club",
+      "pty": "https://a9ee048295ca41a4a4386d9883db1114--pty.ap-singapore.cloudstudio.club"
+    }
+  },
+  "config": {
+    "api": "https://a9ee048295ca41a4a4386d9883db1114--api.ap-singapore.cloudstudio.club",
+    "pty": "https://a9ee048295ca41a4a4386d9883db1114--pty.ap-singapore.cloudstudio.club",
+    "region": "ap-shanghai",
+    "spaceKey": "a9ee048295ca41a4a4386d9883db1114"
+  }
+}

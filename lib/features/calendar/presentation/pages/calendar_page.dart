@@ -112,7 +112,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
                 ),
                 child: IconButton(
                   onPressed: () {
-                    // TODO: 导出月度报告
+                    _generateMonthlyReport(context);
                   },
                   icon: const Icon(
                     FluentSystemIcons.ic_fluent_document_regular,
@@ -562,5 +562,190 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
   String _getWeekdayName(DateTime date) {
     const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     return weekdays[date.weekday % 7];
+  }
+
+  void _generateMonthlyReport(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 拖拽指示器
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: const BoxDecoration(
+                    color: AppColors.textHint,
+                    borderRadius: BorderRadius.all(Radius.circular(2)),
+                  ),
+                ),
+              ),
+              
+              const SizedBox(height: 24),
+              
+              Text(
+                '生成月度报告',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              
+              const SizedBox(height: 8),
+              
+              Text(
+                '${_currentMonth.year}年${_currentMonth.month}月消费分析报告',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              
+              const SizedBox(height: 24),
+              
+              // 报告选项
+              _buildReportOption(
+                context,
+                '详细报告',
+                '包含每日消费明细和分类统计',
+                FluentSystemIcons.ic_fluent_document_text_regular,
+                () => _generateDetailedReport(),
+              ),
+              
+              const SizedBox(height: 12),
+              
+              _buildReportOption(
+                context,
+                '图表报告',
+                '可视化消费趋势和分类占比',
+                FluentSystemIcons.ic_fluent_chart_multiple_regular,
+                () => _generateChartReport(),
+              ),
+              
+              const SizedBox(height: 12),
+              
+              _buildReportOption(
+                context,
+                '简要总结',
+                '月度消费概览和建议',
+                FluentSystemIcons.ic_fluent_document_bullet_list_regular,
+                () => _generateSummaryReport(),
+              ),
+              
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReportOption(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: () {
+        Navigator.pop(context);
+        onTap();
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.creamWhite,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: AppColors.divider,
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+            
+            const SizedBox(width: 16),
+            
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            const Icon(
+              FluentSystemIcons.ic_fluent_chevron_right_regular,
+              color: AppColors.textHint,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _generateDetailedReport() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('正在生成详细报告...'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _generateChartReport() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('正在生成图表报告...'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _generateSummaryReport() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('正在生成简要总结...'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 }

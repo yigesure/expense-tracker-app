@@ -94,9 +94,14 @@ class DashboardPage extends ConsumerWidget {
               ],
             ),
             child: IconButton(
-              onPressed: () {
-                // TODO: 实现通知功能
-              },
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('通知功能正在开发中，敬请期待！'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
               icon: const Icon(
                 FluentSystemIcons.ic_fluent_alert_regular,
                 color: AppColors.textPrimary,

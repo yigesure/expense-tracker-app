@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/services/export_service.dart';
 
 /// 统计页面
 class StatisticsPage extends ConsumerStatefulWidget {
@@ -61,6 +62,243 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
     );
   }
 
+  void _showExportDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: const BoxDecoration(
+                    color: AppColors.textHint,
+                    borderRadius: BorderRadius.all(Radius.circular(2)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                '导出数据',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '选择导出格式和时间范围',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 24),
+              _buildExportOption(
+                context,
+                '导出为CSV',
+                '适合Excel等表格软件打开',
+                FluentSystemIcons.ic_fluent_document_table_regular,
+                () => _exportData('csv'),
+              ),
+              const SizedBox(height: 12),
+              _buildExportOption(
+                context,
+                '导出为JSON',
+                '包含完整的数据结构信息',
+                FluentSystemIcons.ic_fluent_code_regular,
+                () => _exportData('json'),
+              ),
+              const SizedBox(height: 12),
+              _buildExportOption(
+                context,
+                '生成月度报告',
+                '包含详细的统计分析',
+                FluentSystemIcons.ic_fluent_document_pdf_regular,
+                () => _generateMonthlyReport(),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExportOption(
+    BuildContext context,
+    String title,
+    String description,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+        onTap();
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.divider),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: AppColors.gradientPurpleStart.withAlpha((0.1 * 255).round()),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: AppColors.gradientPurpleStart,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios,
+              color: AppColors.textHint,
+              size: 16,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _exportData(String format) async {
+    try {
+      final now = DateTime.now();
+      final startDate = DateTime(now.year, _selectedMonth, 1);
+      final endDate = DateTime(now.year, _selectedMonth + 1, 0, 23, 59, 59);
+      
+      String content;
+      String fileName;
+      
+      if (format == 'csv') {
+        content = await ExportService.exportToCsv(
+          startDate: startDate,
+          endDate: endDate,
+        );
+        fileName = '记账数据_${now.year}年${_selectedMonth}月.csv';
+      } else {
+        content = await ExportService.exportToJson(
+          startDate: startDate,
+          endDate: endDate,
+        );
+        fileName = '记账数据_${now.year}年${_selectedMonth}月.json';
+      }
+      
+      await ExportService.shareData(content, fileName);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('数据导出成功：$fileName'),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('导出失败：$e'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _generateMonthlyReport() async {
+    try {
+      final report = await ExportService.generateMonthlyReport(
+        DateTime.now().year,
+        _selectedMonth,
+      );
+      
+      final content = '''
+# ${report['period']} 月度报告
+
+## 收支概览
+- 总收入：¥${report['totalIncome'].toStringAsFixed(2)}
+- 总支出：¥${report['totalExpense'].toStringAsFixed(2)}
+- 净收入：¥${report['netAmount'].toStringAsFixed(2)}
+- 交易笔数：${report['totalTransactions']}
+
+## 支出分析
+- 日均支出：¥${report['averageDailyExpense'].toStringAsFixed(2)}
+
+### 主要支出分类
+${(report['topCategories'] as List).map((entry) => '- ${entry.key}：¥${entry.value.toStringAsFixed(2)}').join('\n')}
+
+---
+报告生成时间：${DateTime.now().toString().split('.')[0]}
+      ''';
+      
+      final fileName = '月度报告_${DateTime.now().year}年${_selectedMonth}月.md';
+      await ExportService.shareData(content, fileName);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('月度报告生成成功'),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('报告生成失败：$e'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+}
+
   Widget _buildAppBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -86,9 +324,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
               ],
             ),
             child: IconButton(
-              onPressed: () {
-                // TODO: 导出数据
-              },
+                onPressed: () => _showExportDialog(context),
               icon: const Icon(
                 FluentSystemIcons.ic_fluent_share_regular,
                 color: AppColors.textPrimary,

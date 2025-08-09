@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../settings/presentation/pages/settings_page.dart';
+import 'ai_chat_page.dart';
 
 /// AI智能助手页面
 class AiAssistantPage extends ConsumerWidget {
@@ -100,7 +102,7 @@ class AiAssistantPage extends ConsumerWidget {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(16),
                             onTap: () {
-                              // TODO: 打开AI聊天界面
+                              _openAIChatInterface(context);
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -162,9 +164,14 @@ class AiAssistantPage extends ConsumerWidget {
               ],
             ),
             child: IconButton(
-              onPressed: () {
-                // TODO: 打开设置
-              },
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(),
+                    ),
+                  );
+                },
               icon: const Icon(
                 FluentSystemIcons.ic_fluent_settings_regular,
                 color: AppColors.textPrimary,
@@ -253,6 +260,15 @@ class AiAssistantPage extends ConsumerWidget {
             ),
           );
         }).toList(),
+      ),
+    );
+  }
+
+  void _openAIChatInterface(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AIChatPage(),
       ),
     );
   }

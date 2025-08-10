@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/providers/transaction_provider.dart';
+
 import '../../../../core/models/transaction.dart';
+import '../../../../core/providers/transaction_provider.dart';
+import '../../../../core/theme/app_colors.dart';
 
 /// 日历页面
+/// 
+/// 提供月度消费日历视图，显示每日消费记录和月度统计
 class CalendarPage extends ConsumerStatefulWidget {
+  /// 创建日历页面
   const CalendarPage({super.key});
 
   @override

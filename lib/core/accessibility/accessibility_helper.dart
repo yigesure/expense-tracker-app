@@ -372,18 +372,26 @@ class AccessibilityHelper {
   }
 
   /// 生成无障碍性改进建议
-  static List<String> _generateRecommendations(MediaQuery mediaQuery, ThemeData theme) {
-    final recommendations = <String>[];
+  static List<String> _generateRecommendations(
+    MediaQueryData mediaQuery,
+    ThemeData theme,
+  ) {
+    final List<String> recommendations = <String>[];
     
     // 检查文本缩放
-    final textScale = mediaQuery.textScaler.scale(1.0);
+    final double textScale = mediaQuery.textScaler.scale(1.0);
     if (textScale > 1.3) {
       recommendations.add('用户使用了较大的文本缩放，确保UI布局能够适应');
     }
     
-    // 检查高对比度模式
-    if (mediaQuery.highContrast) {
-      recommendations.add('用户启用了高对比度模式，确保颜色对比度足够');
+    // 检查高对比度模式 - 使用安全的属性访问
+    try {
+      final bool isHighContrast = mediaQuery.highContrast;
+      if (isHighContrast) {
+        recommendations.add('用户启用了高对比度模式，确保颜色对比度足够');
+      }
+    } catch (e) {
+      AppLogger.warning('AccessibilityHelper', 'highContrast property not available: $e');
     }
     
     // 检查动画禁用
@@ -397,7 +405,7 @@ class AccessibilityHelper {
     }
     
     // 检查颜色对比度
-    final primaryContrast = checkColorContrast(
+    final bool primaryContrast = checkColorContrast(
       theme.colorScheme.onPrimary,
       theme.colorScheme.primary,
     );

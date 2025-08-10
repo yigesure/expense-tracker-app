@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/performance_keys.dart';
 import 'data_management_page.dart';
 
+/// 设置页面
+/// 
+/// 提供应用的各种设置选项，包括账户设置、应用设置、数据管理等
 class SettingsPage extends StatefulWidget {
+  /// 创建设置页面
   const SettingsPage({super.key});
 
   @override

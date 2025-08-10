@@ -1,14 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+import 'core/services/crash_reporting_service.dart';
+import 'core/services/transaction_service.dart';
+import 'core/theme/app_colors.dart';
 import 'core/theme/material3_theme.dart';
 import 'core/theme/theme_manager.dart';
-import 'core/theme/app_colors.dart';
-import 'core/services/transaction_service.dart';
-import 'core/services/crash_reporting_service.dart';
-import 'core/utils/image_cache_manager.dart';
 import 'core/utils/animation_optimizer.dart';
+import 'core/utils/image_cache_manager.dart';
 import 'core/utils/logger.dart';
 import 'core/widgets/state_widgets.dart';
 import 'features/main/presentation/pages/main_page.dart';

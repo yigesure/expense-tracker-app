@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
+
 import '../../../../core/theme/app_colors.dart';
 import '../widgets/balance_card.dart';
 import '../widgets/quick_actions.dart';
-import '../widgets/recent_transactions.dart';
 import '../widgets/quick_input_bar.dart';
+import '../widgets/recent_transactions.dart';
 
 /// 首页Dashboard
+/// 
+/// 显示用户的账户余额、快捷操作和最近交易记录
 class DashboardPage extends ConsumerWidget {
+  /// 创建Dashboard页面
   const DashboardPage({super.key});
 
   @override

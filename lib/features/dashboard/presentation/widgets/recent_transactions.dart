@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/providers/data_providers.dart';
+import '../../../../core/providers/transaction_provider.dart';
 import '../../../../core/models/transaction.dart';
 import '../../../transaction/presentation/pages/transaction_detail_page.dart';
 import '../../../transaction/presentation/pages/transaction_edit_page.dart';
@@ -14,11 +14,20 @@ class RecentTransactions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final todayTransactions = ref.watch(todayTransactionsProvider); // 暂时注释掉未使用的变量
-    final allTransactions = ref.watch(transactionsProvider);
+    final transactionsAsync = ref.watch(transactionListProvider);
     
-    // 获取最近的交易记录（今日 + 最近几天）
-    final recentTransactions = allTransactions.take(8).toList();
+    return transactionsAsync.when(
+      data: (allTransactions) {
+        // 获取最近的交易记录（今日 + 最近几天）
+        final recentTransactions = allTransactions.take(8).toList();
+        return _buildContent(context, ref, recentTransactions);
+      },
+      loading: () => _buildLoadingState(context),
+      error: (error, stack) => _buildErrorState(context, error),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, WidgetRef ref, List<Transaction> recentTransactions) {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -56,7 +65,7 @@ class RecentTransactions extends ConsumerWidget {
                     ),
                     const SizedBox(width: 4),
                     const Icon(
-                      MdiIcons.chevronRight,
+                      FluentSystemIcons.ic_fluent_chevron_right_regular,
                       color: AppColors.gradientPurpleStart,
                       size: 16,
                     ),
@@ -253,7 +262,7 @@ class RecentTransactions extends ConsumerWidget {
                       child: Row(
                         children: [
                           Icon(
-                            MdiIcons.pencil,
+                            FluentSystemIcons.ic_fluent_edit_regular,
                             size: 16,
                             color: AppColors.textSecondary,
                           ),
@@ -267,7 +276,7 @@ class RecentTransactions extends ConsumerWidget {
                       child: Row(
                         children: [
                           Icon(
-                            MdiIcons.delete,
+                            FluentSystemIcons.ic_fluent_delete_regular,
                             size: 16,
                             color: AppColors.error,
                           ),
@@ -343,8 +352,71 @@ class RecentTransactions extends ConsumerWidget {
       return '${difference.inDays}天前';
     } else {
       return '${dateTime.month}月${dateTime.day}日';
-    }
   }
+
+  Widget _buildLoadingState(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '最近交易',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState(BuildContext context, Object error) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '最近交易',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.error.withAlpha((0.1 * 255).round()),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  color: AppColors.error,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    '加载交易记录失败：$error',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.error,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
   void _showDeleteDialog(BuildContext context, Transaction transaction, WidgetRef ref) {
     showDialog(
@@ -358,15 +430,32 @@ class RecentTransactions extends ConsumerWidget {
             child: const Text('取消'),
           ),
           TextButton(
-            onPressed: () {
-              ref.read(transactionsProvider.notifier).removeTransaction(transaction.id);
+            onPressed: () async {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('交易记录已删除'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
+              final result = await ref.read(transactionListProvider.notifier).deleteTransaction(transaction.id);
+              
+              if (context.mounted) {
+                result.when(
+                  success: (_) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('交易记录已删除'),
+                        backgroundColor: AppColors.success,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                  failure: (message, exception) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('删除失败：$message'),
+                        backgroundColor: AppColors.error,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                );
+              }
             },
             style: TextButton.styleFrom(
               foregroundColor: AppColors.error,

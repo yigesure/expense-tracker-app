@@ -48,6 +48,14 @@ dependencies:
   uuid: ^4.2.1
   shared_preferences: ^2.2.2
   share_plus: ^7.2.1
+  
+  # 数据导出和文件处理
+  csv: ^5.0.2
+  file_picker: ^6.1.1
+  
+  # PDF生成
+  pdf: ^3.10.7
+  printing: ^5.11.1
 
 dev_dependencies:
   flutter_test:

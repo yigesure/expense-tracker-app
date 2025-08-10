@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/models/transaction.dart';
 import '../../../../core/providers/transaction_provider.dart';
+import '../../../../core/utils/performance_keys.dart';
+import '../../../../core/widgets/swipe_action_widget.dart';
+import '../../../../core/widgets/state_handlers.dart';
+import '../../../../core/services/undo_service.dart';
+import '../widgets/optimized_transaction_item.dart';
 import 'transaction_detail_page.dart';
 import 'transaction_edit_page.dart';
 
@@ -16,6 +22,7 @@ class TransactionListPage extends ConsumerStatefulWidget {
 class _TransactionListPageState extends ConsumerState<TransactionListPage> {
   String _selectedFilter = 'all';
   String _selectedSort = 'date_desc';
+  final UndoService _undoService = UndoService();
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +34,15 @@ class _TransactionListPageState extends ConsumerState<TransactionListPage> {
           children: [
             _buildAppBar(),
             _buildFilterBar(),
+            if (_undoService.canUndo) _buildUndoBar(),
             Expanded(
-              child: transactionsAsync.when(
-                data: (transactions) => _buildTransactionList(transactions),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) => _buildErrorState(error),
+              child: AsyncStateBuilder<List<Transaction>>(
+                asyncValue: transactionsAsync,
+                dataBuilder: (transactions) => _buildTransactionList(transactions),
+                loadingMessage: '加载交易记录中...',
+                emptyTitle: '暂无交易记录',
+                emptySubtitle: '当前筛选条件下没有找到交易记录',
+                onRetry: () => ref.refresh(transactionListProvider),
               ),
             ),
           ],
@@ -101,6 +112,7 @@ class _TransactionListPageState extends ConsumerState<TransactionListPage> {
 
   Widget _buildFilterBar() {
     return Container(
+      key: PerformanceKeys.transactionFilterBarKey,
       height: 60,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
@@ -205,29 +217,83 @@ class _TransactionListPageState extends ConsumerState<TransactionListPage> {
     );
   }
 
+  Widget _buildUndoBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      color: AppColors.softBlue.withAlpha((0.1 * 255).round()),
+      child: Row(
+        children: [
+          Icon(
+            FluentSystemIcons.ic_fluent_arrow_undo_regular,
+            size: 16,
+            color: AppColors.softBlue,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              _undoService.lastActionDescription ?? '可以撤销上一步操作',
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.softBlue,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: _performUndo,
+            child: const Text(
+              '撤销',
+              style: TextStyle(
+                color: AppColors.softBlue,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTransactionList(List<Transaction> allTransactions) {
     final filteredTransactions = _filterTransactions(allTransactions);
     final sortedTransactions = _sortTransactions(filteredTransactions);
 
-    if (sortedTransactions.isEmpty) {
-      return _buildEmptyState();
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(20),
-      itemCount: sortedTransactions.length,
-      itemBuilder: (context, index) {
-        final transaction = sortedTransactions[index];
-        final showDateHeader = _shouldShowDateHeader(sortedTransactions, index);
-        
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (showDateHeader) _buildDateHeader(transaction.date),
-            _buildTransactionItem(transaction),
-          ],
-        );
+    return RefreshIndicatorWidget(
+      onRefresh: () async {
+        ref.refresh(transactionListProvider);
       },
+      child: ListView.builder(
+        key: PerformanceKeys.transactionListKey,
+        padding: const EdgeInsets.all(20),
+        itemCount: sortedTransactions.length,
+        // 性能优化：添加缓存范围
+        cacheExtent: 500,
+        itemBuilder: (context, index) {
+          final transaction = sortedTransactions[index];
+          final showDateHeader = _shouldShowDateHeader(sortedTransactions, index);
+          
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (showDateHeader) _buildDateHeader(transaction.date),
+              SwipeActionWidget(
+                onEdit: () => _editTransaction(transaction),
+                onDelete: () => _deleteTransaction(transaction),
+                child: OptimizedTransactionItem(
+                  transaction: transaction,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TransactionDetailPage(transaction: transaction),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -489,5 +555,108 @@ class _TransactionListPageState extends ConsumerState<TransactionListPage> {
         ],
       ),
     );
+  }
+
+  void _editTransaction(Transaction transaction) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TransactionEditPage(transaction: transaction),
+      ),
+    ).then((_) {
+      // 刷新列表
+      ref.refresh(transactionListProvider);
+    });
+  }
+
+  void _deleteTransaction(Transaction transaction) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('确认删除'),
+        content: Text('确定要删除交易记录"${transaction.title}"吗？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await _performDelete(transaction);
+            },
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('删除'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _performDelete(Transaction transaction) async {
+    // 记录删除操作到撤销服务
+    _undoService.recordDelete(transaction);
+    
+    final result = await ref
+        .read(transactionListProvider.notifier)
+        .deleteTransaction(transaction.id);
+
+    if (mounted) {
+      result.when(
+        success: (_) {
+          setState(() {}); // 刷新撤销栏状态
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('已删除 ${transaction.title}'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              action: SnackBarAction(
+                label: '撤销',
+                textColor: Colors.white,
+                onPressed: _performUndo,
+              ),
+            ),
+          );
+        },
+        failure: (message, exception) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('删除失败：$message'),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  Future<void> _performUndo() async {
+    final result = await _undoService.undo();
+    
+    if (mounted) {
+      result.when(
+        success: (message) {
+          setState(() {}); // 刷新撤销栏状态
+          ref.refresh(transactionListProvider); // 刷新数据
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        },
+        failure: (message, exception) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('撤销失败：$message'),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        },
+      );
+    }
   }
 }

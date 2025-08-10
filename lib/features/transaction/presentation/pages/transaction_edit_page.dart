@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/models/transaction.dart';
 import '../../../../core/providers/transaction_provider.dart';
@@ -169,9 +169,9 @@ class _TransactionEditPageState extends ConsumerState<TransactionEditPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        MdiIcons.arrowDown,
-                        color: _selectedType == TransactionType.income
-                            ? AppColors.success
+                        FluentSystemIcons.ic_fluent_arrow_down_regular,
+                        color: _selectedType == TransactionType.expense
+                            ? Colors.white
                             : AppColors.textSecondary,
                       ),
                       const SizedBox(width: 8),
@@ -385,7 +385,7 @@ class _TransactionEditPageState extends ConsumerState<TransactionEditPage> {
             child: Row(
               children: [
                 const Icon(
-                  MdiIcons.calendar,
+                  FluentSystemIcons.ic_fluent_calendar_regular,
                   color: AppColors.textSecondary,
                 ),
                 const SizedBox(width: 12),
@@ -554,19 +554,32 @@ class _TransactionEditPageState extends ConsumerState<TransactionEditPage> {
         type: _selectedType,
       );
 
-      await ref
+      final result = await ref
           .read(transactionListProvider.notifier)
           .updateTransaction(updatedTransaction);
 
       if (mounted) {
-        Navigator.pop(context);
-        Navigator.pop(context); // 返回到详情页的上一页
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('交易记录已更新'),
-            backgroundColor: AppColors.success,
-            behavior: SnackBarBehavior.floating,
-          ),
+        result.when(
+          success: (_) {
+            Navigator.pop(context);
+            Navigator.pop(context); // 返回到详情页的上一页
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('交易记录已更新'),
+                backgroundColor: AppColors.success,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          },
+          failure: (message, exception) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('保存失败：$message'),
+                backgroundColor: AppColors.error,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          },
         );
       }
     } catch (e) {

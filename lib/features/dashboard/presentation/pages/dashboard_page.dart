@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
-// import '../../../../core/providers/data_providers.dart'; // 暂时注释掉未使用的导入
 import '../widgets/balance_card.dart';
 import '../widgets/quick_actions.dart';
 import '../widgets/recent_transactions.dart';
@@ -103,7 +102,7 @@ class DashboardPage extends ConsumerWidget {
                   );
                 },
               icon: const Icon(
-                MdiIcons.alert,
+                FluentSystemIcons.ic_fluent_alert_regular,
                 color: AppColors.textPrimary,
               ),
             ),

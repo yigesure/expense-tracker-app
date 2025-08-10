@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/performance_keys.dart';
+import 'data_management_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -31,6 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       body: ListView(
+        key: PerformanceKeys.settingsListView,
         padding: const EdgeInsets.all(20),
         children: [
           // 账户设置
@@ -124,16 +127,15 @@ class _SettingsPageState extends State<SettingsPage> {
           // 数据管理
           _buildSectionHeader('数据管理'),
           _buildSettingsTile(
-            icon: Icons.cloud_sync_outlined,
-            title: '数据同步',
-            subtitle: '云端备份与同步',
-            onTap: () => _showComingSoon('数据同步'),
-          ),
-          _buildSettingsTile(
-            icon: Icons.download,
-            title: '导出数据',
-            subtitle: '导出所有消费记录',
-            onTap: () => _showComingSoon('导出数据'),
+            icon: Icons.folder_outlined,
+            title: '数据管理',
+            subtitle: '导出、备份、同步和恢复数据',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const DataManagementPage(),
+              ),
+            ),
           ),
           _buildSettingsTile(
             icon: Icons.delete_outlined,

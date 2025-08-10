@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/providers/transaction_provider.dart';
+import '../../../../core/models/transaction.dart';
 
 /// 日历页面
 class CalendarPage extends ConsumerStatefulWidget {
@@ -15,7 +17,6 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
   late AnimationController _animationController;
   DateTime _selectedDate = DateTime.now();
   DateTime _currentMonth = DateTime.now();
-  // bool _isExpanded = false; // 暂时注释掉未使用的字段
 
   @override
   void initState() {
@@ -127,94 +128,113 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
   }
 
   Widget _buildMonthlySummaryCard() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.gradientPurpleStart.withAlpha((0.3 * 255).round()),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '${_currentMonth.year}年${_currentMonth.month}月',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
+    final monthlyTransactionsAsync = ref.watch(monthlyTransactionsProvider);
+    
+    return monthlyTransactionsAsync.when(
+      data: (transactions) {
+        final monthlyExpenses = transactions
+            .where((t) => t.type == TransactionType.expense)
+            .toList();
+        
+        final totalExpense = monthlyExpenses.fold(0.0, (sum, t) => sum + t.amount);
+        final expenseDays = monthlyExpenses
+            .map((t) => '${t.date.year}-${t.date.month}-${t.date.day}')
+            .toSet()
+            .length;
+        final avgDaily = expenseDays > 0 ? totalExpense / expenseDays : 0.0;
+        
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: AppColors.primaryGradient,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gradientPurpleStart.withAlpha((0.3 * 255).round()),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
+            ],
+          ),
+          child: Column(
+            children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _currentMonth = DateTime(
-                          _currentMonth.year,
-                          _currentMonth.month - 1,
-                        );
-                      });
-                    },
-                    icon: const Icon(
-                      Icons.chevron_left,
+                  Text(
+                    '${_currentMonth.year}年${_currentMonth.month}月',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: Colors.white,
-                      size: 20,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _currentMonth = DateTime(
-                          _currentMonth.year,
-                          _currentMonth.month + 1,
-                        );
-                      });
-                    },
-                    icon: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _currentMonth = DateTime(
+                              _currentMonth.year,
+                              _currentMonth.month - 1,
+                            );
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.chevron_left,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _currentMonth = DateTime(
+                              _currentMonth.year,
+                              _currentMonth.month + 1,
+                            );
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.chevron_right,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildSummaryItem('总支出', '¥${totalExpense.toStringAsFixed(2)}', Icons.trending_down),
+                  ),
+                  Container(
+                    width: 1,
+                    height: 40,
+                    color: Colors.white.withAlpha((0.3 * 255).round()),
+                  ),
+                  Expanded(
+                    child: _buildSummaryItem('消费天数', '${expenseDays}天', Icons.calendar_today),
+                  ),
+                  Container(
+                    width: 1,
+                    height: 40,
+                    color: Colors.white.withAlpha((0.3 * 255).round()),
+                  ),
+                  Expanded(
+                    child: _buildSummaryItem('日均支出', '¥${avgDaily.toStringAsFixed(2)}', Icons.analytics),
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _buildSummaryItem('总支出', '¥3,420.50', Icons.trending_down),
-              ),
-              Container(
-                width: 1,
-                height: 40,
-                color: Colors.white.withAlpha((0.3 * 255).round()),
-              ),
-              Expanded(
-                child: _buildSummaryItem('消费天数', '28天', Icons.calendar_today),
-              ),
-              Container(
-                width: 1,
-                height: 40,
-                color: Colors.white.withAlpha((0.3 * 255).round()),
-              ),
-              Expanded(
-                child: _buildSummaryItem('日均支出', '¥122.16', Icons.analytics),
-              ),
-            ],
-          ),
-        ],
-      ),
+        );
+      },
+      loading: () => _buildLoadingSummaryCard(),
+      error: (error, stack) => _buildErrorSummaryCard(),
     );
   }
 
@@ -420,129 +440,148 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
   }
 
   Widget _buildExpenseList() {
-    // 模拟当日消费数据
-    final expenses = [
-      {'time': '14:30', 'title': '星巴克咖啡', 'category': '餐饮', 'amount': -35.0, 'icon': '☕'},
-      {'time': '12:15', 'title': '地铁卡充值', 'category': '交通', 'amount': -100.0, 'icon': '🚇'},
-      {'time': '12:00', 'title': '午餐', 'category': '餐饮', 'amount': -28.5, 'icon': '🍜'},
-    ];
+    final transactionsAsync = ref.watch(transactionListProvider);
+    
+    return transactionsAsync.when(
+      data: (allTransactions) {
+        // 筛选选中日期的交易记录
+        final dayTransactions = allTransactions.where((transaction) {
+          return transaction.date.year == _selectedDate.year &&
+                 transaction.date.month == _selectedDate.month &&
+                 transaction.date.day == _selectedDate.day;
+        }).toList();
 
-    if (expenses.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.receipt,
-              size: 48,
-              color: AppColors.textHint,
+        if (dayTransactions.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.receipt,
+                  size: 48,
+                  color: AppColors.textHint,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '这一天没有消费记录',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              '这一天没有消费记录',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+          );
+        }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: expenses.length,
-      itemBuilder: (context, index) {
-        final expense = expenses[index];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 12),
+        return ListView.builder(
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.creamWhite,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.divider,
-              width: 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              // 时间轴
-              Column(
+          itemCount: dayTransactions.length,
+          itemBuilder: (context, index) {
+            final transaction = dayTransactions[index];
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.creamWhite,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.divider,
+                  width: 1,
+                ),
+              ),
+              child: Row(
                 children: [
-                  Text(
-                    expense['time'] as String,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.w500,
+                  // 时间轴
+                  Column(
+                    children: [
+                      Text(
+                        '${transaction.date.hour.toString().padLeft(2, '0')}:${transaction.date.minute.toString().padLeft(2, '0')}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: transaction.type == TransactionType.income 
+                              ? AppColors.success 
+                              : AppColors.gradientPurpleStart,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
+                  ),
+                  
+                  const SizedBox(width: 16),
+                  
+                  // 图标
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        transaction.categoryIcon,
+                        style: const TextStyle(fontSize: 20),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: AppColors.gradientPurpleStart,
-                      shape: BoxShape.circle,
+                  
+                  const SizedBox(width: 12),
+                  
+                  // 交易信息
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          transaction.title,
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          transaction.category,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // 金额
+                  Text(
+                    '${transaction.type == TransactionType.income ? '+' : '-'}¥${transaction.amount.toStringAsFixed(2)}',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: transaction.type == TransactionType.income 
+                          ? AppColors.success 
+                          : AppColors.error,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
               ),
-              
-              const SizedBox(width: 16),
-              
-              // 图标
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    expense['icon'] as String,
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                ),
-              ),
-              
-              const SizedBox(width: 12),
-              
-              // 消费信息
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      expense['title'] as String,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      expense['category'] as String,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              
-              // 金额
-              Text(
-                '¥${(expense['amount'] as double).abs().toStringAsFixed(2)}',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: AppColors.error,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Text(
+          '加载失败：$error',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AppColors.error,
+          ),
+        ),
+      ),
     );
   }
 
@@ -553,9 +592,17 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
   }
 
   bool _hasExpenseOnDate(DateTime date) {
-    // 模拟有消费记录的日期
-    final expenseDays = [1, 3, 5, 8, 12, 15, 18, 22, 25, 28];
-    return expenseDays.contains(date.day);
+    final transactionsAsync = ref.read(transactionListProvider);
+    return transactionsAsync.when(
+      data: (transactions) {
+        return transactions.any((transaction) =>
+            transaction.date.year == date.year &&
+            transaction.date.month == date.month &&
+            transaction.date.day == date.day);
+      },
+      loading: () => false,
+      error: (_, __) => false,
+    );
   }
 
   String _getWeekdayName(DateTime date) {
@@ -744,6 +791,58 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
       const SnackBar(
         content: Text('正在生成简要总结...'),
         behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Widget _buildLoadingSummaryCard() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gradientPurpleStart.withAlpha((0.3 * 255).round()),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorSummaryCard() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.error.withAlpha((0.1 * 255).round()),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.error.withAlpha((0.3 * 255).round())),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.error_outline,
+            color: AppColors.error,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              '加载月度数据失败',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.error,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/models/transaction.dart';
 import '../../../../core/providers/transaction_provider.dart';
@@ -95,7 +95,7 @@ class TransactionDetailPage extends ConsumerWidget {
                   value: 'edit',
                   child: Row(
                     children: [
-                      Icon(MdiIcons.pencil),
+                      Icon(FluentSystemIcons.ic_fluent_edit_regular),
                       SizedBox(width: 8),
                       Text('编辑'),
                     ],
@@ -105,7 +105,7 @@ class TransactionDetailPage extends ConsumerWidget {
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(MdiIcons.delete, color: AppColors.error),
+                      Icon(FluentSystemIcons.ic_fluent_delete_regular, color: AppColors.error),
                       SizedBox(width: 8),
                       Text('删除', style: TextStyle(color: AppColors.error)),
                     ],
@@ -207,34 +207,34 @@ class TransactionDetailPage extends ConsumerWidget {
           _buildDetailItem(
             '分类',
             transaction.category,
-            MdiIcons.tag,
+            FluentSystemIcons.ic_fluent_tag_regular,
           ),
           const SizedBox(height: 16),
           _buildDetailItem(
             '类型',
             transaction.type == TransactionType.income ? '收入' : '支出',
             transaction.type == TransactionType.income
-                ? MdiIcons.arrowDown
-                : MdiIcons.arrowUp,
+                ? FluentSystemIcons.ic_fluent_arrow_down_regular
+                : FluentSystemIcons.ic_fluent_arrow_up_regular,
           ),
           const SizedBox(height: 16),
           _buildDetailItem(
             '日期',
             '${transaction.date.year}年${transaction.date.month}月${transaction.date.day}日',
-            MdiIcons.calendar,
+            FluentSystemIcons.ic_fluent_calendar_regular,
           ),
           const SizedBox(height: 16),
           _buildDetailItem(
             '时间',
             '${transaction.date.hour.toString().padLeft(2, '0')}:${transaction.date.minute.toString().padLeft(2, '0')}',
-            MdiIcons.clock,
+            FluentSystemIcons.ic_fluent_clock_regular,
           ),
           if (transaction.description != null && transaction.description!.isNotEmpty) ...[
             const SizedBox(height: 16),
             _buildDetailItem(
               '备注',
               transaction.description!,
-              MdiIcons.note,
+              FluentSystemIcons.ic_fluent_note_regular,
             ),
           ],
         ],
@@ -293,7 +293,7 @@ class TransactionDetailPage extends ConsumerWidget {
         Expanded(
           child: ElevatedButton.icon(
             onPressed: () => _editTransaction(context),
-            icon: const Icon(MdiIcons.pencil),
+            icon: const Icon(FluentSystemIcons.ic_fluent_edit_regular),
             label: const Text('编辑'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.gradientPurpleStart,
@@ -309,7 +309,7 @@ class TransactionDetailPage extends ConsumerWidget {
         Expanded(
           child: ElevatedButton.icon(
             onPressed: () => _deleteTransaction(context, ref),
-            icon: const Icon(MdiIcons.delete),
+            icon: const Icon(FluentSystemIcons.ic_fluent_delete_regular),
             label: const Text('删除'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.error,
@@ -360,31 +360,32 @@ class TransactionDetailPage extends ConsumerWidget {
             onPressed: () async {
               Navigator.pop(context); // 关闭对话框
               
-              try {
-                await ref
-                    .read(transactionListProvider.notifier)
-                    .deleteTransaction(transaction.id);
-                
-                if (context.mounted) {
-                  Navigator.pop(context); // 返回上一页
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('交易记录已删除'),
-                      backgroundColor: AppColors.success,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('删除失败：$e'),
-                      backgroundColor: AppColors.error,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                }
+              final result = await ref
+                  .read(transactionListProvider.notifier)
+                  .deleteTransaction(transaction.id);
+              
+              if (context.mounted) {
+                result.when(
+                  success: (_) {
+                    Navigator.pop(context); // 返回上一页
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('交易记录已删除'),
+                        backgroundColor: AppColors.success,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                  failure: (message, exception) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('删除失败：$message'),
+                        backgroundColor: AppColors.error,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                );
               }
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),

@@ -1,20 +1,20 @@
 {
-  "path": "c:\\Users\\23828\\Desktop\\expense-tracker-app-main",
-  "desc": "这是一个现代化的Flutter个人记账应用，具有智能记账、AI助手、数据可视化等功能。支持自然语言输入记账，完整的交易管理和统计分析功能。",
-  "id": "72c3e3314889480e94caa26cf01abdeb",
+  "path": "c:\\Users\\23828\\Desktop\\expense-tracker-app-main\\web_deploy",
+  "desc": "Clean Expense Tracker App - No Demo Data",
+  "id": "e6fc6ed002414687ba48406db45a8608",
   "data": {
-    "spaceKey": "72c3e3314889480e94caa26cf01abdeb",
+    "spaceKey": "e6fc6ed002414687ba48406db45a8608",
     "connections": {
-      "webIDE": "https://72c3e3314889480e94caa26cf01abdeb.ap-singapore.cloudstudio.club",
+      "webIDE": "https://e6fc6ed002414687ba48406db45a8608.ap-singapore.cloudstudio.club",
       "preview": "",
-      "api": "https://72c3e3314889480e94caa26cf01abdeb--api.ap-singapore.cloudstudio.club",
-      "pty": "https://72c3e3314889480e94caa26cf01abdeb--pty.ap-singapore.cloudstudio.club"
+      "api": "https://e6fc6ed002414687ba48406db45a8608--api.ap-singapore.cloudstudio.club",
+      "pty": "https://e6fc6ed002414687ba48406db45a8608--pty.ap-singapore.cloudstudio.club"
     }
   },
   "config": {
-    "api": "https://72c3e3314889480e94caa26cf01abdeb--api.ap-singapore.cloudstudio.club",
-    "pty": "https://72c3e3314889480e94caa26cf01abdeb--pty.ap-singapore.cloudstudio.club",
+    "api": "https://e6fc6ed002414687ba48406db45a8608--api.ap-singapore.cloudstudio.club",
+    "pty": "https://e6fc6ed002414687ba48406db45a8608--pty.ap-singapore.cloudstudio.club",
     "region": "ap-shanghai",
-    "spaceKey": "72c3e3314889480e94caa26cf01abdeb"
+    "spaceKey": "e6fc6ed002414687ba48406db45a8608"
   }
 }

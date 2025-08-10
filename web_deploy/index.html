@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人记账应用</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">个人记账</h1>
+                <div class="header-actions">
+                    <button class="icon-btn" id="searchBtn">
+                        <span class="material-icons">search</span>
+                    </button>
+                    <button class="icon-btn" id="settingsBtn">
+                        <span class="material-icons">settings</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 余额卡片 -->
+            <div class="balance-card">
+                <div class="balance-header">
+                    <h2>总余额</h2>
+                    <button class="visibility-toggle" id="balanceToggle">
+                        <span class="material-icons">visibility</span>
+                    </button>
+                </div>
+                <div class="balance-amount" id="balanceAmount">¥0.00</div>
+                <div class="balance-details">
+                    <div class="balance-item">
+                        <span class="label">本月收入</span>
+                        <span class="amount income">+¥0.00</span>
+                    </div>
+                    <div class="balance-item">
+                        <span class="label">本月支出</span>
+                        <span class="amount expense">-¥0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快速操作 -->
+            <div class="quick-actions">
+                <button class="quick-action-btn income" id="addIncomeBtn">
+                    <span class="material-icons">add</span>
+                    <span>收入</span>
+                </button>
+                <button class="quick-action-btn expense" id="addExpenseBtn">
+                    <span class="material-icons">remove</span>
+                    <span>支出</span>
+                </button>
+                <button class="quick-action-btn transfer" id="transferBtn">
+                    <span class="material-icons">swap_horiz</span>
+                    <span>转账</span>
+                </button>
+            </div>
+
+            <!-- 最近交易 -->
+            <div class="recent-transactions">
+                <div class="section-header">
+                    <h3>最近交易</h3>
+                    <button class="text-btn" id="viewAllBtn">查看全部</button>
+                </div>
+                <div class="transaction-list" id="transactionList">
+                    <!-- 交易项目将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </main>
+
+        <!-- 底部导航 -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="dashboard">
+                <span class="material-icons">dashboard</span>
+                <span>首页</span>
+            </button>
+            <button class="nav-item" data-page="transactions">
+                <span class="material-icons">list</span>
+                <span>交易</span>
+            </button>
+            <button class="nav-item" data-page="statistics">
+                <span class="material-icons">bar_chart</span>
+                <span>统计</span>
+            </button>
+            <button class="nav-item" data-page="calendar">
+                <span class="material-icons">calendar_today</span>
+                <span>日历</span>
+            </button>
+            <button class="nav-item" data-page="ai">
+                <span class="material-icons">smart_toy</span>
+                <span>AI助手</span>
+            </button>
+        </nav>
+
+        <!-- 添加交易浮动按钮 -->
+        <button class="fab" id="addTransactionFab">
+            <span class="material-icons">add</span>
+        </button>
+    </div>
+
+    <!-- 添加交易模态框 -->
+    <div class="modal" id="addTransactionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加交易</h3>
+                <button class="close-btn" id="closeModal">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <form class="transaction-form" id="transactionForm">
+                <div class="form-group">
+                    <label>类型</label>
+                    <div class="type-selector">
+                        <button type="button" class="type-btn active" data-type="expense">支出</button>
+                        <button type="button" class="type-btn" data-type="income">收入</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="amount">金额</label>
+                    <input type="number" id="amount" placeholder="0.00" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">分类</label>
+                    <select id="category" required>
+                        <option value="">选择分类</option>
+                        <option value="food">餐饮</option>
+                        <option value="transport">交通</option>
+                        <option value="shopping">购物</option>
+                        <option value="entertainment">娱乐</option>
+                        <option value="healthcare">医疗</option>
+                        <option value="education">教育</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">备注</label>
+                    <input type="text" id="description" placeholder="添加备注...">
+                </div>
+                <div class="form-group">
+                    <label for="date">日期</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">取消</button>
+                    <button type="submit" class="btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

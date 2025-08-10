@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart' show Icons;
+import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class AIChatPage extends ConsumerStatefulWidget {
@@ -53,7 +53,7 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(
-                MdiIcons.robot,
+                FluentSystemIcons.ic_fluent_bot_regular,
                 color: Colors.white,
                 size: 16,
               ),

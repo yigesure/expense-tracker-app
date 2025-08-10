@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/providers/data_providers.dart';
+import '../../../../core/providers/transaction_provider.dart';
 
 /// 账户余额卡片
 class BalanceCard extends ConsumerStatefulWidget {
@@ -53,9 +53,35 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
 
   @override
   Widget build(BuildContext context) {
-    final balance = ref.watch(balanceProvider);
-    final monthlyIncome = ref.watch(monthlyIncomeProvider);
-    final monthlyExpense = ref.watch(monthlyExpenseProvider);
+    final balanceAsync = ref.watch(balanceProvider);
+    final monthlyTransactionsAsync = ref.watch(monthlyTransactionsProvider);
+    
+    return balanceAsync.when(
+      data: (balance) => monthlyTransactionsAsync.when(
+        data: (monthlyTransactions) {
+          // 计算本月收入和支出
+          double monthlyIncome = 0;
+          double monthlyExpense = 0;
+          
+          for (final transaction in monthlyTransactions) {
+            if (transaction.type == TransactionType.income) {
+              monthlyIncome += transaction.amount;
+            } else {
+              monthlyExpense += transaction.amount;
+            }
+          }
+          
+          return _buildBalanceCard(context, balance, monthlyIncome, monthlyExpense);
+        },
+        loading: () => _buildLoadingCard(context),
+        error: (error, stack) => _buildErrorCard(context, error),
+      ),
+      loading: () => _buildLoadingCard(context),
+      error: (error, stack) => _buildErrorCard(context, error),
+    );
+  }
+
+  Widget _buildBalanceCard(BuildContext context, double balance, double monthlyIncome, double monthlyExpense) {
 
     return AnimatedBuilder(
       animation: _animationController,
@@ -139,7 +165,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                         child: _buildIncomeExpenseItem(
                           '本月收入',
                           monthlyIncome,
-                          MdiIcons.arrowUp,
+                          FluentSystemIcons.ic_fluent_arrow_up_regular,
                           AppColors.success,
                         ),
                       ),
@@ -153,7 +179,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
                         child: _buildIncomeExpenseItem(
                           '本月支出',
                           monthlyExpense,
-                          MdiIcons.arrowDown,
+                          FluentSystemIcons.ic_fluent_arrow_down_regular,
                           AppColors.error,
                         ),
                       ),
@@ -246,6 +272,58 @@ class _BalanceCardState extends ConsumerState<BalanceCard>
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildLoadingCard(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gradientPurpleStart.withAlpha((0.3 * 255).round()),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorCard(BuildContext context, Object error) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.error.withAlpha((0.1 * 255).round()),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.error.withAlpha((0.3 * 255).round())),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.error_outline,
+            color: AppColors.error,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              '加载余额失败：$error',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.error,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,0 +1,62 @@
+# Expense Tracker 代码全面审查、修复与UX升级方案
+
+## Core Features
+
+- 全面Bug审计与修复（静态分析、运行时错误、边界用例）
+
+- 性能优化（Widget重建控制、列表与图片优化、异步与IO、缓存）
+
+- 架构优化（明确分层：UI/Provider/Service/Model；错误与结果统一；可测试性）
+
+- UI/UX现代化（Material 3主题、色板与排版统一、动效与状态、无障碍）
+
+- 交互流程优化（快速记账流程、编辑/撤销、空/加载/错误态、手势）
+
+- 工程质量（更严格lints、单元/Widget/金丝雀测试、GitHub Actions、版本化）
+
+- 国际化与本地化（中文优先，多语言预留、文案与格式本地化）
+
+- 可选：本地持久化/离线（Hive/Isar），数据导出/分享与备份
+
+## Tech Stack
+
+{
+  "Web": {
+    "arch": "flutter",
+    "component": null
+  },
+  "iOS": "Flutter(iOS构建与签名)",
+  "Android": "Flutter(Android构建与签名)"
+}
+
+## Design
+
+采用Material 3设计系统，动态色与亮/暗色主题；统一栅格、间距、圆角与阴影；关键动效（过渡、显隐、点击反馈）；可达性（对比度、字号、无障碍语义、焦点与键盘导航）。
+
+## Plan
+
+Note: 
+
+- [ ] is holding
+- [/] is doing
+- [X] is done
+
+---
+
+[X] Step 1 基线评估与风险清单（依赖/版本/运行自测/已知问题）
+
+[X] Step 2 静态扫描与单测红线清零（dart analyze/测试修复/提升lint）
+
+[X] Step 3 架构与错误处理改造（分层/Result模型/统一异常与日志）
+
+[X] Step 4 性能专项（重建与Keys、ListView.builder、图片/图标、异步与缓存）
+
+[X] Step 5 UI/UX主题与组件重构（M3、主题与组件库统一、状态与动效）
+
+[X] Step 6 交互流程优化（快速记账流程、编辑/撤销、空/加载/错误态、手势）
+
+[X] Step 7 可选：持久化/离线与导出（Hive/Isar、导出/分享、备份）
+
+[X] Step 8 工程化（CI流水线：analyze/test/build，版本与变更日志、崩溃防护）
+
+[X] Step 9 QA回归与验收（手测清单/金丝雀/性能与无障碍审计）

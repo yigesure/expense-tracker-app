@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:fluentui_icons/fluentui_icons.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/performance_keys.dart';
 import '../../../transaction/presentation/pages/add_transaction_page.dart';
 import '../../../statistics/presentation/pages/statistics_page.dart';
 
@@ -26,6 +27,7 @@ class QuickActions extends StatelessWidget {
         SizedBox(
           height: 120,
           child: ListView(
+            key: PerformanceKeys.quickActionsListView,
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -33,7 +35,7 @@ class QuickActions extends StatelessWidget {
               _buildActionCard(
                 context,
                 '记一笔',
-                MdiIcons.plusCircle,
+                FluentSystemIcons.ic_fluent_add_circle_regular,
                 AppColors.primaryGradient,
                 () {
                   Navigator.push(
@@ -47,7 +49,7 @@ class QuickActions extends StatelessWidget {
               _buildActionCard(
                 context,
                 '转账',
-                MdiIcons.swapHorizontal,
+                FluentSystemIcons.ic_fluent_arrow_swap_regular,
                 AppColors.blueGradient,
                 () {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -61,7 +63,7 @@ class QuickActions extends StatelessWidget {
               _buildActionCard(
                 context,
                 '预算',
-                MdiIcons.target,
+                FluentSystemIcons.ic_fluent_target_regular,
                 AppColors.incomeGradient,
                 () {
                   ScaffoldMessenger.of(context).showSnackBar(

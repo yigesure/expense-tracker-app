@@ -306,18 +306,30 @@ class _QuickInputBarState extends ConsumerState<QuickInputBar>
     try {
       final transactions = NLPService.parseNaturalLanguage(input);
       if (transactions.isNotEmpty) {
-        await ref.read(transactionListProvider.notifier).addMultipleTransactions(transactions);
-        _textController.clear();
-        Navigator.pop(context);
+        final result = await ref.read(transactionListProvider.notifier).addMultipleTransactions(transactions);
         
-        // 显示成功提示
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('成功添加 ${transactions.length} 条记录'),
-              backgroundColor: AppColors.success,
-              behavior: SnackBarBehavior.floating,
-            ),
+          result.when(
+            success: (_) {
+              _textController.clear();
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('成功添加 ${transactions.length} 条记录'),
+                  backgroundColor: AppColors.success,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            failure: (message, exception) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('添加失败：$message'),
+                  backgroundColor: AppColors.error,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
           );
         }
       } else {

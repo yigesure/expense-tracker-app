@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart' show Icons;
 import 'package:uuid/uuid.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/models/transaction.dart';
 import '../../../../core/providers/transaction_provider.dart';
+import '../../../../core/widgets/material3_components.dart';
+import '../../../../core/accessibility/accessibility_helper.dart';
+import '../../../../core/utils/animation_optimizer.dart';
+import '../../../../core/utils/performance_keys.dart';
 
 class AddTransactionPage extends ConsumerStatefulWidget {
   const AddTransactionPage({super.key});
@@ -13,10 +16,17 @@ class AddTransactionPage extends ConsumerStatefulWidget {
   ConsumerState<AddTransactionPage> createState() => _AddTransactionPageState();
 }
 
-class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
+class _AddTransactionPageState extends ConsumerState<AddTransactionPage>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+  
   TransactionType _selectedType = TransactionType.expense;
   String _selectedCategory = '餐饮';
   String _selectedCategoryIcon = '🍜';
@@ -45,10 +55,41 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
   };
 
   @override
+  void initState() {
+    super.initState();
+    
+    _animationController = AnimationController(
+      duration: AnimationOptimizer.getOptimizedDuration(
+        const Duration(milliseconds: 600),
+      ),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: AnimationOptimizer.getOptimizedCurve(Curves.easeOut),
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: AnimationOptimizer.getOptimizedCurve(Curves.easeOutCubic),
+    ));
+
+    _animationController.forward();
+  }
+
+  @override
   void dispose() {
     _titleController.dispose();
     _amountController.dispose();
     _descriptionController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -59,29 +100,77 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: Column(
+              children: [
+                _buildAppBar(),
+                Expanded(
+                  child: Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                      key: PerformanceKeys.addTransactionScrollView,
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildTypeSelector(),
+                          const SizedBox(height: 24),
+                          _buildAmountInput(),
+                          const SizedBox(height: 24),
+                          _buildTitleInput(),
+                          const SizedBox(height: 24),
+                          _buildCategorySelector(),
+                          const SizedBox(height: 24),
+                          _buildDateSelector(),
+                          const SizedBox(height: 24),
+                          _buildDescriptionInput(),
+                          const SizedBox(height: 32),
+                          _buildSaveButton(),
+                          const SizedBox(height: 20), // 底部安全区域
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAppBar() {
+    return AccessibilityHelper.accessibleHeader(
+      label: '添加交易页面',
+      hint: '填写交易信息并保存',
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Row(
           children: [
-            _buildAppBar(),
+            AccessibilityHelper.accessibleTouchTarget(
+              label: '返回',
+              hint: '返回上一页',
+              onTap: () => Navigator.pop(context),
+              child: M3Components.card(
+                padding: const EdgeInsets.all(8),
+                margin: EdgeInsets.zero,
+                child: const Icon(
+                  Icons.arrow_back_ios,
+                  color: AppColors.textPrimary,
+                  size: 20,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildTypeSelector(),
-                    const SizedBox(height: 24),
-                    _buildAmountInput(),
-                    const SizedBox(height: 24),
-                    _buildTitleInput(),
-                    const SizedBox(height: 24),
-                    _buildCategorySelector(),
-                    const SizedBox(height: 24),
-                    _buildDateSelector(),
-                    const SizedBox(height: 24),
-                    _buildDescriptionInput(),
-                    const SizedBox(height: 32),
-                    _buildSaveButton(),
-                  ],
+              child: Text(
+                '添加交易',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -91,48 +180,10 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
     );
   }
 
-  Widget _buildAppBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: const [
-                BoxShadow(
-                  color: AppColors.shadowLight,
-                  blurRadius: 8,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              '添加交易',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildTypeSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return AccessibilityHelper.accessibleGroup(
+      label: '交易类型选择',
+      hint: '选择支出或收入',
       children: [
         Text(
           '交易类型',
@@ -144,15 +195,21 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
         Row(
           children: [
             Expanded(
-              child: GestureDetector(
-                onTap: () {
+              child: AccessibilityHelper.accessibleButton(
+                label: '支出',
+                hint: _selectedType == TransactionType.expense ? '已选中' : '点击选择支出',
+                onPressed: () {
                   setState(() {
                     _selectedType = TransactionType.expense;
                     _selectedCategory = _expenseCategories.keys.first;
                     _selectedCategoryIcon = _expenseCategories.values.first;
                   });
                 },
-                child: Container(
+                child: AnimatedContainer(
+                  duration: AnimationOptimizer.getOptimizedDuration(
+                    const Duration(milliseconds: 200),
+                  ),
+                  curve: AnimationOptimizer.getOptimizedCurve(Curves.easeInOut),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     gradient: _selectedType == TransactionType.expense
@@ -160,11 +217,11 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                         : null,
                     color: _selectedType == TransactionType.expense
                         ? null
-                        : AppColors.surface,
+                        : Theme.of(context).colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
                     border: _selectedType == TransactionType.expense
                         ? null
-                        : Border.all(color: AppColors.divider),
+                        : Border.all(color: Theme.of(context).colorScheme.outline),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -173,7 +230,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                         Icons.arrow_upward,
                         color: _selectedType == TransactionType.expense
                             ? Colors.white
-                            : AppColors.textSecondary,
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(width: 8),
                       Text(
@@ -181,7 +238,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                         style: TextStyle(
                           color: _selectedType == TransactionType.expense
                               ? Colors.white
-                              : AppColors.textSecondary,
+                              : Theme.of(context).colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -192,15 +249,21 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: GestureDetector(
-                onTap: () {
+              child: AccessibilityHelper.accessibleButton(
+                label: '收入',
+                hint: _selectedType == TransactionType.income ? '已选中' : '点击选择收入',
+                onPressed: () {
                   setState(() {
                     _selectedType = TransactionType.income;
                     _selectedCategory = _incomeCategories.keys.first;
                     _selectedCategoryIcon = _incomeCategories.values.first;
                   });
                 },
-                child: Container(
+                child: AnimatedContainer(
+                  duration: AnimationOptimizer.getOptimizedDuration(
+                    const Duration(milliseconds: 200),
+                  ),
+                  curve: AnimationOptimizer.getOptimizedCurve(Curves.easeInOut),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     gradient: _selectedType == TransactionType.income
@@ -208,11 +271,11 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                         : null,
                     color: _selectedType == TransactionType.income
                         ? null
-                        : AppColors.surface,
+                        : Theme.of(context).colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
                     border: _selectedType == TransactionType.income
                         ? null
-                        : Border.all(color: AppColors.divider),
+                        : Border.all(color: Theme.of(context).colorScheme.outline),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -221,7 +284,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                         Icons.arrow_downward,
                         color: _selectedType == TransactionType.income
                             ? Colors.white
-                            : AppColors.textSecondary,
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(width: 8),
                       Text(
@@ -229,7 +292,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                         style: TextStyle(
                           color: _selectedType == TransactionType.income
                               ? Colors.white
-                              : AppColors.textSecondary,
+                              : Theme.of(context).colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -245,79 +308,78 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
   }
 
   Widget _buildAmountInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '金额',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.divider),
-          ),
-          child: TextField(
-            controller: _amountController,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            style: const TextStyle(
-              fontSize: 18,
+    return AccessibilityHelper.accessibleFormField(
+      label: '金额',
+      hint: '输入交易金额',
+      required: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '金额 *',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
             ),
-            decoration: const InputDecoration(
-              hintText: '0.00',
-              prefixText: '¥ ',
-              prefixStyle: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.all(16),
-            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 12),
+          M3Components.textField(
+            label: '金额',
+            hint: '0.00',
+            controller: _amountController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return '请输入金额';
+              }
+              final amount = double.tryParse(value);
+              if (amount == null || amount <= 0) {
+                return '请输入有效的金额';
+              }
+              return null;
+            },
+            prefixIcon: Icons.attach_money,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildTitleInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '标题',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.divider),
-          ),
-          child: TextField(
-            controller: _titleController,
-            decoration: const InputDecoration(
-              hintText: '输入交易标题',
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.all(16),
+    return AccessibilityHelper.accessibleFormField(
+      label: '标题',
+      hint: '输入交易标题',
+      required: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '标题 *',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 12),
+          M3Components.textField(
+            label: '标题',
+            hint: '输入交易标题',
+            controller: _titleController,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return '请输入交易标题';
+              }
+              return null;
+            },
+            prefixIcon: Icons.title,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildCategorySelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return AccessibilityHelper.accessibleGroup(
+      label: '分类选择',
+      hint: '选择交易分类',
       children: [
         Text(
           '分类',
@@ -331,20 +393,28 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
           runSpacing: 8,
           children: _currentCategories.entries.map((entry) {
             final isSelected = entry.key == _selectedCategory;
-            return GestureDetector(
-              onTap: () {
+            return AccessibilityHelper.accessibleButton(
+              label: '${entry.value} ${entry.key}',
+              hint: isSelected ? '已选中' : '点击选择此分类',
+              onPressed: () {
                 setState(() {
                   _selectedCategory = entry.key;
                   _selectedCategoryIcon = entry.value;
                 });
               },
-              child: Container(
+              child: AnimatedContainer(
+                duration: AnimationOptimizer.getOptimizedDuration(
+                  const Duration(milliseconds: 200),
+                ),
+                curve: AnimationOptimizer.getOptimizedCurve(Curves.easeInOut),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   gradient: isSelected ? AppColors.primaryGradient : null,
-                  color: isSelected ? null : AppColors.surface,
+                  color: isSelected ? null : Theme.of(context).colorScheme.surfaceContainerLow,
                   borderRadius: BorderRadius.circular(20),
-                  border: isSelected ? null : Border.all(color: AppColors.divider),
+                  border: isSelected ? null : Border.all(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -354,7 +424,9 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                     Text(
                       entry.key,
                       style: TextStyle(
-                        color: isSelected ? Colors.white : AppColors.textPrimary,
+                        color: isSelected 
+                            ? Colors.white 
+                            : Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -369,114 +441,91 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
   }
 
   Widget _buildDateSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '日期',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 12),
-        GestureDetector(
-          onTap: _selectDate,
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.divider),
+    return AccessibilityHelper.accessibleSelector(
+      label: '日期选择',
+      hint: '点击选择交易日期和时间',
+      currentValue: '${_selectedDate.year}年${_selectedDate.month}月${_selectedDate.day}日',
+      onTap: _selectDate,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '日期',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
             ),
+          ),
+          const SizedBox(height: 12),
+          M3Components.card(
+            onTap: _selectDate,
+            padding: const EdgeInsets.all(16),
+            margin: EdgeInsets.zero,
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.calendar_today,
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(width: 12),
                 Text(
                   '${_selectedDate.year}年${_selectedDate.month}月${_selectedDate.day}日',
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 const Spacer(),
-                const Icon(
+                Icon(
                   Icons.arrow_forward_ios,
-                  color: AppColors.textHint,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   size: 16,
                 ),
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildDescriptionInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '备注',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.divider),
-          ),
-          child: TextField(
-            controller: _descriptionController,
-            maxLines: 3,
-            decoration: const InputDecoration(
-              hintText: '添加备注信息（可选）',
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.all(16),
+    return AccessibilityHelper.accessibleFormField(
+      label: '备注',
+      hint: '输入备注信息，可选',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '备注',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 12),
+          M3Components.textField(
+            label: '备注',
+            hint: '添加备注信息（可选）',
+            controller: _descriptionController,
+            maxLines: 3,
+            prefixIcon: Icons.note_add,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildSaveButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _saveTransaction,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.gradientPurpleStart,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+    return AccessibilityHelper.accessibleButton(
+      label: '保存交易',
+      hint: '保存当前填写的交易信息',
+      onPressed: _isLoading ? null : _saveTransaction,
+      child: SizedBox(
+        width: double.infinity,
+        child: M3Components.primaryButton(
+          text: '保存交易',
+          onPressed: _isLoading ? null : _saveTransaction,
+          isLoading: _isLoading,
+          icon: Icons.save,
         ),
-        child: _isLoading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-            : const Text(
-                '保存交易',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
       ),
     );
   }
@@ -520,26 +569,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
   }
 
   Future<void> _saveTransaction() async {
-    if (_titleController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('请输入交易标题'),
-          backgroundColor: AppColors.warning,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
-
-    final amount = double.tryParse(_amountController.text);
-    if (amount == null || amount <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('请输入有效的金额'),
-          backgroundColor: AppColors.warning,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
@@ -552,7 +582,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
       final transaction = Transaction(
         id: uuid.v4(),
         title: _titleController.text.trim(),
-        amount: amount,
+        amount: double.parse(_amountController.text),
         category: _selectedCategory,
         categoryIcon: _selectedCategoryIcon,
         date: _selectedDate,
@@ -562,18 +592,31 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
         type: _selectedType,
       );
 
-      await ref
+      final result = await ref
           .read(transactionListProvider.notifier)
           .addTransaction(transaction);
 
       if (mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('交易记录已保存'),
-            backgroundColor: AppColors.success,
-            behavior: SnackBarBehavior.floating,
-          ),
+        result.when(
+          success: (_) {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('交易记录已保存'),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          },
+          failure: (message, exception) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('保存失败：$message'),
+                backgroundColor: Theme.of(context).colorScheme.error,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          },
         );
       }
     } catch (e) {
@@ -581,7 +624,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('保存失败：$e'),
-            backgroundColor: AppColors.error,
+            backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
         );

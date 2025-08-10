@@ -106,7 +106,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                 context,
                 '导出为CSV',
                 '适合Excel等表格软件打开',
-                MdiIcons.table,
+                Icons.table_chart,
                 () => _exportData('csv'),
               ),
               const SizedBox(height: 12),

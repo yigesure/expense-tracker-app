@@ -12,8 +12,8 @@ class AppColors {
   static const Color deepBlue = Color(0xFF7BB3F0);
   
   // 强调色 - 渐变紫
-  static const Color gradientPurpleStart = Color(0xFFAA96DA);
-  static const Color gradientPurpleEnd = Color(0xFFFCBAD3);
+  static const Color gradientPurpleStart = Color(0xFF2563EB);
+  static const Color gradientPurpleEnd = Color(0xFF22D3EE);
   static const Color lightPurple = Color(0xFFE1BEE7);
   static const Color deepPurple = Color(0xFF9C27B0);
   
